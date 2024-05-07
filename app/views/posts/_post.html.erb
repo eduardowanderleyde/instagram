@@ -27,7 +27,7 @@
   <p>
     <strong>Images:</strong>
     <%= post.images.each do |image| %>
-      <div><%= link_to image.filename, image %></div>
+      <div><%= image_tag image%></div>
     <% end %>
   </p>
 
