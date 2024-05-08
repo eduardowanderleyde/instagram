@@ -1,34 +1,16 @@
 <div id="<%= dom_id post %>">
-  <p>
-    <strong>Caption:</strong>
-    <%= post.caption %>
-  </p>
 
-  <p>
-    <strong>Longitude:</strong>
-    <%= post.longitude %>
-  </p>
-
-  <p>
-    <strong>Latitude:</strong>
-    <%= post.latitude %>
-  </p>
-
-  <p>
-    <strong>Allow comments:</strong>
-    <%= post.allow_comments %>
-  </p>
-
-  <p>
-    <strong>Show likes count:</strong>
-    <%= post.show_likes_count %>
-  </p>
-
-  <p>
-    <strong>Images:</strong>
-    <%= post.images.each do |image| %>
-      <div><%= image_tag image%></div>
-    <% end %>
-  </p>
+<div class="card" style="width: 18rem;">
+  <div class="card-header">
+    <%= post.user.username %>
+  </div>
+  <%= image_tag post.images.last, class:"card-img-top"%>
+  <div class="card-body">
+    <p class="card-text"><%= post.caption %></p>
+  </div>
+  <div class="card-footer">
+    Featured
+  </div>
+</div>
 
 </div>
