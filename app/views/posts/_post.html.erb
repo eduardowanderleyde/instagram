@@ -29,20 +29,15 @@
     </div>
     </div>
       
-      <div class="card-body">
-      <div id="carouselExampleIndicators" class="carousel slide" data-bs-ide="true">
-            <div class="carousel-indicators">
-              <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true"></button>
-              <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" class="active" aria-label="slide-2"></button>
-              <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" class="active" aria-label="slide-3"></button>
-            </div>
+    <div class="card-body">
+      <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="true">
 
             <div class="carousel-inner">
-                <%= post.images.each do |img| %>
-                  <div class="carousel-item active" style="height: 25rem">
-                    <%= image_tag img, class:"d-block w-100", style:"max-height: 100%; object-fit: cover;" %>
-                  </div>
-                <% end %>
+                <%= post.images.each_with_index do |img, i| %>
+                  <div class="carousel-item <%= i==0 ? 'active' : '' %>" style="height: 25rem">
+                  <%= image_tag img, class:"d-block w-100", style:"max-height: 100%; object-fit: cover;" %>
+                </div>
+              <% end %>
             </div>  
             <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
               <span class="carousel-control-prev-icon" aria-hidden="true"></span>
@@ -52,11 +47,19 @@
               <span class="carousel-control-next-icon" aria-hidden="true"></span>
               <span class="visually-hidden">Next</span>
             </button>
+            <div class="carousel-indicators" style="position:static">
+            <% post.images.each_with_index do |img, i| %>
+              <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="<%= i %>" class=" bg-dark <%= i==0 ?  'active' : '' %>" <%= i==0 ? 'aria-current="true"' : '' %> aria-label="Slide <%= i+1 %>"></button>
+            <% end %>
+            </div>
           </div>
-        <p class="card-text"><%= post.caption %></p>
+        <p class="card-text"><span class="fw-bold"><%= post.user.username %></span><%= post.caption %>this is a long caption</p>
+
+        <small class="text-muted"><%= time_ago_in_words(post.created_at) %></small>
     </div>
-    <div class="card-footer">
-      Featured
+    <div class="card-footer d-flex justify-content-between bg-white">
+      <input type="text" class="w-75" placeholder="Add a comment..." style="border:none">
+      <a class="text-primary fw-bold" style="text-decoration:none">Post</a>
     </div>
   </div>
 
