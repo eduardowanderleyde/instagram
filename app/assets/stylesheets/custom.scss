@@ -1,17 +1,19 @@
 html {
-    height:100vh;
+    height: 100vh;
 }
 
 body {
     background-color: #fafafa;
     height: 100%;
 }
+
 .home-sections {
     height: 100%;
     width: 80;
 }
 
-.images-section, login-section {
+.images-section,
+login-section {
     height: 95%;
     width: 45%;
     background-position-x: right;
@@ -25,13 +27,14 @@ body {
     max-height: 100%;
 }
 
-.card-img-top{
+.card-img-top {
     max-width: 50%;
     align-self: center;
 }
 
 .line-text {
-    padding: 0 .5rem; /*creates the space*/
+    padding: 0 .5rem;
+    /*creates the space*/
     font-size: small;
     margin: 0;
 }
@@ -39,12 +42,16 @@ body {
 .line {
     flex: 1;
     height: 1px;
-    background-color: rgb(139, 137,137);
+    background-color: rgb(139, 137, 137);
 }
 
-.facebook{
+.facebook {
     max-width: 1rem;
     height: auto;
     margin-right: .5rem
 }
 
+.card::-webkit-scrollbar {
+    width: 0;
+
+}
