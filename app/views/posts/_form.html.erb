@@ -1,47 +1,56 @@
-<%= form_with(model: post) do |form| %>
-  <% if post.errors.any? %>
-    <div style="color: red">
-      <h2><%= pluralize(post.errors.count, "error") %> prohibited this post from being saved:</h2>
+<div class="modal fade modal-lg" id="staticBackdrop" data-bs-background="static" data-bs-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <%= form_with(model: post) do |form| %>
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Create new post</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body d-flex">
+          <div class="border-end border-secondary mx-2" style="width:80%">
+            <%= form.file_field :images, multiple: true %>
+          </div>
+          <div style="width:40%">
+            <% if post.errors.any? %>
+              <div style="color: red">
+                <h2><%= pluralize(post.errors.count, "error") %> prohibited this post from being saved:</h2>
+                <ul>
+                  <% post.errors.each do |error| %>
+                    <li><%= error.full_message %></li>
+                  <% end %>
+                </ul>
+              </div>
+            <% end %>
 
-      <ul>
-        <% post.errors.each do |error| %>
-          <li><%= error.full_message %></li>
-        <% end %>
-      </ul>
-    </div>
-  <% end %>
+            <div class="my-2">
+              <% if current_user.profile_pic.attached? %>
+                  <%= image_tag current_user.profile_pic, class: "img-thumbnail rounded-circle", style: "width: 10%" %>
+                <% else %>
+                  <%= image_tag 'user-pp.jpeg', class: "img-thumbnail rounded-circle", style: "width: 10%" %>
+                <% end %>
+                <span class="fw-bold mx-2"><%= current_user.username %> </span>
+              </div>
 
-  <div>
-    <%= form.label :caption, style: "display: block" %>
-    <%= form.text_field :caption %>
+            <div>
+              <%= form.text_area :caption, rows:8, placeholder: "Write a caption...", class:"form-control-border-0", style:"resize:none" %>
+            </div>
+
+            <div>
+              <%= form.label :allow_comments, style: "display: block" %>
+              <%= form.check_box :allow_comments %>
+            </div>
+            <div>
+              <%= form.label :show_likes_count, style: "display: block" %>
+              <%= form.check_box :show_likes_count %>
+            </div>      
+          </div>      
+        </div>
+        <div class="modal-footer">
+          <%= form.submit "Post", class: "btn btn-primary"%>
+        </div>
+      </div>
+    <% end %>
   </div>
-
-  <div>
-    <%= form.label :longitude, style: "display: block" %>
-    <%= form.text_field :longitude %>
-  </div>
-
-  <div>
-    <%= form.label :latitude, style: "display: block" %>
-    <%= form.text_field :latitude %>
-  </div>
-
-  <div>
-    <%= form.label :allow_comments, style: "display: block" %>
-    <%= form.check_box :allow_comments %>
-  </div>
-
-  <div>
-    <%= form.label :show_likes_count, style: "display: block" %>
-    <%= form.check_box :show_likes_count %>
-  </div>
-
-  <div>
-    <%= form.label :images, style: "display: block" %>
-    <%= form.file_field :images, multiple: true %>
-  </div>
-
-  <div>
-    <%= form.submit %>
-  </div>
-<% end %>
+</div>
