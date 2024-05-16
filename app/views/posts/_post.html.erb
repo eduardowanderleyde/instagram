@@ -1,4 +1,4 @@
-<div class="my-3 d-flex justify-content-between" id="<%= dom_id post %>">
+<div class="my-3 d-flex justify-content-between " id="<%= dom_id post %>">
 
 <div class="card" style="width: 25rem;"> 
   <div class="card-header bg-white">
@@ -39,17 +39,17 @@
                 </div>
               <% end %>
             </div>  
-            <button class="carousel-control-prev" type="button" data-bs-target="carouselExampleIndicators" data-bs-slide="prev">
+            <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
               <span class="carousel-control-prev-icon" aria-hidden="true"></span>
               <span class="visually-hidden">Previous</span>
             </button>
-            <button class="carousel-control-next" type="button" data-bs-target="carouselExampleIndicators" data-bs-slide="next">
+            <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
               <span class="carousel-control-next-icon" aria-hidden="true"></span>
               <span class="visually-hidden">Next</span>
             </button>
             <div class="carousel-indicators" style="position:static">
             <% post.images.each_with_index do |img, i| %>
-              <button type="button" data-bs-target="carouselExampleIndicators" data-bs-slide-to="<%= i %>" class=" bg-dark <%= i==0 ?  'active' : '' %>" <%= i==0 ? 'aria-current="true"' : '' %> aria-label="Slide <%= i+1 %>"></button>
+              <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="<%= i %>" class=" bg-dark <%= i==0 ?  'active' : '' %>" <%= i==0 ? 'aria-current="true"' : '' %> aria-label="Slide <%= i+1 %>"></button>
             <% end %>
             </div>
           </div>
