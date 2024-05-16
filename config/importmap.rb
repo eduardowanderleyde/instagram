@@ -9,3 +9,4 @@ pin "bootstrap", to: "https://ga.jspm.io/npm:bootstrap@5.3.0/dist/js/bootstrap.e
 pin "@popperjs/core", to: "https://unpkg.com/@popperjs/core@2.11.6/dist/esm/index.js"
 pin "filepond" # @4.31.1
 pin_all_from "app/javascript/custom", under: "custom"
+pin "filepond-plugin-image-preview" # @4.6.12
