@@ -5,19 +5,23 @@ import FilePondPluginImagePreview from "filepond-plugin-image-preview";
 import FilePondPluginFileValidateType from "filepond-plugin-file-validate-type";
 
 // Register the plugins 
-FilePond.registerPlugin(
-  FilePondPluginImagePreview,
-  FilePondPluginFileValidateType
-  );
+document.addEventListener('turbo:load', loadFilePond);
 
-// Get a reference to the file input element
-const inputElement = document.querySelector('#post-images');
+  function loadFilePond(){
+  FilePond.registerPlugin(
+    FilePondPluginImagePreview,
+    FilePondPluginFileValidateType
+    );
 
-// Create a FilePond instance
-const pond = FilePond.create(inputElement, {
-  credits: {},
-  storeAsFile: true,
-  allowMultiple: true,
-  allowReorder: true,
-  acceptedFileTypes: ['image/*'],
-});
+  // Get a reference to the file input element
+  const inputElement = document.querySelector('#post-images');
+
+  // Create a FilePond instance
+  const pond = FilePond.create(inputElement, {
+    credits: {},
+    storeAsFile: true,
+    allowMultiple: true,
+    allowReorder: true,
+    acceptedFileTypes: ['image/*'],
+  });
+}
