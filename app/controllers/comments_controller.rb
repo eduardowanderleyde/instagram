@@ -19,8 +19,18 @@ class CommentsController < ApplicationController
     @comment = Comment.find(params[:id])
     if @comment.user == current_user
       @comment.destroy
-    end 
-    redirect_to @comment.post
+
+      respond_to do |format|
+        format.turbo_stream do 
+          render turbo_stream: turbo_stream.remove(
+            "post#{@comment.post_id}ModalComment#{@comment.id}"
+          )
+        end
+        format.html { redirect_to @comment.post and return }
+      end
+    else
+      redirect_to @comment.post, alert: "Você não tem permissão para excluir este comentário."
+    end
   end
 
   private
