@@ -20,12 +20,14 @@
           </div>
           <!-- Dropdown menu for post actions (e.g., delete) -->
           <div>
+            <% if current_user == post.user %>
             <div class="dropdown">
               <a class="text-dark fs-4" style="text-decoration:none" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">...</a>
               <ul class="dropdown-menu">
                 <li><%= button_to 'Delete post', post, method: :delete, class: "dropdown-item" %></li>
               </ul>
             </div>
+            <% end %>
           </div>
         </div>
       </div>
