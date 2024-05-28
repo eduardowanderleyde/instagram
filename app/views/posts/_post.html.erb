@@ -1,27 +1,36 @@
 <% unless post.nil? %>
   <div class="my-3 d-flex justify-content-between" id="<%= dom_id post %>">
     <div class="card" style="width: 25rem;">
+      <!-- Card header with user info and dropdown for post actions -->
       <div class="card-header bg-white">
         <div class="d-flex justify-content-between">
           <div>
-            <% if post.user.profile_pic.attached? %>
-              <%= image_tag post.user.profile_pic, class: "img-thumbnail rounded-circle", style: "width: 10%" %>
-            <% else %>
-              <%= image_tag 'user-pp.jpeg', class: "img-thumbnail rounded-circle", style: "width: 10%" %>
+            <!-- Link to the user's profile with profile picture and username -->
+            <%= link_to post.user, class: "a-decoration-none" do %>
+              <% if post.user.profile_pic.attached? %>
+                <%= image_tag post.user.profile_pic, class: "img-thumbnail rounded-circle", style: "width: 10%" %>
+              <% else %>
+                <%= image_tag 'user-pp.jpeg', class: "img-thumbnail rounded-circle", style: "width: 10%" %>
+              <% end %>
             <% end %>
-            <span class="fw-bold mx-2"><%= post.user.username %> </span>
+            <!-- Link to the user's profile with username -->
+            <%= link_to post.user, class: "a-decoration-none" do %>
+              <span class="fw-bold mx-2"><%= post.user.username %></span>
+            <% end %>
           </div>
+          <!-- Dropdown menu for post actions (e.g., delete) -->
           <div>
             <div class="dropdown">
               <a class="text-dark fs-4" style="text-decoration:none" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">...</a>
               <ul class="dropdown-menu">
-                <li><a class="dropdown-item" href="#">Editar Post</a></li>
-                <li><a class="dropdown-item" href="#">Excluir</a></li>
+                <li><%= button_to 'Delete post', post, method: :delete, class: "dropdown-item" %></li>
               </ul>
             </div>
           </div>
         </div>
       </div>
+
+      <!-- Card body with carousel for post images and post details -->
       <div class="card-body">
         <div id="post<%= post.id %>_images" class="carousel slide" data-bs-ride="true">
           <div class="carousel-inner">
@@ -33,11 +42,11 @@
           </div>
           <button class="carousel-control-prev" type="button" data-bs-target="#post<%= post.id %>_images" data-bs-slide="prev">
             <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Anterior</span>
+            <span class="visually-hidden">Previous</span>
           </button>
           <button class="carousel-control-next" type="button" data-bs-target="#post<%= post.id %>_images" data-bs-slide="next">
             <span class="carousel-control-next-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Próximo</span>
+            <span class="visually-hidden">Next</span>
           </button>
           <div class="carousel-indicators" style="position:static">
             <% post.images.each_with_index do |img, i| %>
@@ -46,12 +55,14 @@
           </div>
         </div>
         <%= render "posts/post_actions", post: post %>
-        <p class="card-text"><span class="fw-bold"><%= post.user.username %> </span><%= post.caption %></p>
+        <p class="card-text"><span class="fw-bold"><%= post.user.username %></span><%= post.caption %></p>
 
         <%= render "posts/post_comments", post: post %>
 
         <small class="text-muted"><%= time_ago_in_words(post.created_at) %></small>
       </div>
+
+      <!-- Form to add a new comment to the post -->
       <%= form_with url: comments_path, method: :post, data: {controller: "comments", action: "turbo:submit-end->comments#clear"} do |f| %>
         <div class="card-footer d-flex justify-content-between bg-white">
           <%= f.hidden_field :post_id, value: post.id %>
@@ -63,10 +74,9 @@
   </div>
 <% end %>
 
+<!-- Script to handle double-click on the carousel to like the post -->
 <script>
-  document.getElementById("post<%= post.id %>
-  _images").addEventListener("dblclick", function(){
-    document.getElementById("post<%=post.id%>actions-likeBtn").click();
-
-  })
+  document.getElementById("post<%= post.id %>_images").addEventListener("dblclick", function(){
+    document.getElementById("post<%= post.id %>actions-likeBtn").click();
+  });
 </script>

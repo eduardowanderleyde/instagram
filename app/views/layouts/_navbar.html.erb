@@ -1,6 +1,4 @@
-
-
-<nav class="navbar navbar-expand-lg navbar-light bg-light sticky-top bg-white border-bottom", style="border-color: #afafaf">
+<nav class="navbar navbar-expand-lg navbar-light bg-light sticky-top bg-white border-bottom" style="border-color: #afafaf">
   <div class="container-fluid w-75">
     <%= link_to root_path, class: "navbar-brand" do %>
       <%= image_tag 'logo.jpeg', width: "100rem" %>
@@ -8,7 +6,7 @@
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
-    <div class="d-flex"
+    <div class="d-flex">
       <div class="collapse navbar-collapse me-5" id="navbarSupportedContent">
         <form class="d-flex" role="search">
           <input class="form-control me-2 border-0" type="search" placeholder="Search" aria-label="Search" style="background: #efefef">
@@ -25,16 +23,23 @@
         <i class="fa-regular fa-heart fa-xl"></i>
 
         <div class="dropdown">
-          <a class="" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              <% if current_user && current_user.profile_pic.attached? %>
+          <a class="text-dark" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+            <% if current_user && current_user.profile_pic.attached? %>
               <%= image_tag current_user.profile_pic, class: "img-thumbnail rounded-circle", style: "width: 2rem" %>
             <% else %>
               <%= image_tag 'user-pp.jpeg', class: "img-thumbnail rounded-circle", style: "width: 2rem" %>
             <% end %>
           </a>
-          <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-            <%= button_to "Log Out", destroy_user_session_path, method: :delete, class: "dropdown-item" %>
-          </li>
+          <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+            <li>
+              <%= link_to "Profile", user_path(current_user), class: "dropdown-item" %>
+            </li>
+            <li>
+              <%= link_to "Settings", edit_user_registration_path, class: "dropdown-item" %>
+            </li>
+            <li>
+              <%= link_to "Log Out", destroy_user_session_path, method: :delete, class: "dropdown-item" %>
+            </li>
           </ul>
         </div>
       </div>

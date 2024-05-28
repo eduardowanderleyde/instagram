@@ -1,17 +1,27 @@
-<div id="post<%= comment.post_id%>ModalComment<%=comment.id%>">
+<div id="post<%= comment.post_id %>ModalComment<%= comment.id %>">
   <div class="d-flex justify-content-between">
     <div class="d-flex">
-      <%= image_tag 'user-pp.jpeg', class: "img-thumbnail rounded-circle", style: "width: 2.5rem; max-height:2.5rem" %>
-      <div class="d-flex flex-column mx-3 justify-content-center"> 
-        <small class="fw-bold" style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width:10rem"><%= comment.user.username %></small>
-        <small> <%= comment.body %></small>
-        <small class="text-muted"> <%= time_ago_in_words(comment.created_at) %></small>
+      <!-- Display user profile picture -->
+      <%= image_tag 'user-pp.jpeg', class: "img-thumbnail rounded-circle", style: "width: 2.5rem; max-height: 2.5rem" %>
+      <div class="d-flex flex-column mx-3 justify-content-center">
+        <!-- Display username with ellipsis if too long -->
+        <small class="fw-bold" style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 10rem">
+          <!-- Link to user profile -->
+          <%= link_to comment.user, class: "a-decoration-none" do %>
+            <%= comment.user.username %>
+          <% end %>
+        </small>
+        <!-- Display comment body -->
+        <small><%= comment.body %></small>
+        <!-- Display time ago the comment was created -->
+        <small class="text-muted"><%= time_ago_in_words(comment.created_at) %></small>
       </div>
     </div>
-  <% if comment.user == current_user %>
-    <%= button_to comment_path(id: comment.id), method: :delete, style: "background:none; border:none" do %>
-      <i class="fa fa-times"></i>
+    <!-- Display delete button if the comment belongs to the current user -->
+    <% if comment.user == current_user %>
+      <%= button_to comment_path(id: comment.id), method: :delete, style: "background: none; border: none" do %>
+        <i class="fa fa-times"></i>
+      <% end %>
     <% end %>
-  <% end %>
-</div>
+  </div>
 </div>
