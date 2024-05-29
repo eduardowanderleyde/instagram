@@ -7,7 +7,8 @@ class Follow < ApplicationRecord
     self.update(accepted: true)
   end
 
-  def decline
-    self.destroy
+  private
+  def check_privacy
+    self.accepted = true unless self.followed.private?
   end
 end
