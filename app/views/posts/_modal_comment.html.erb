@@ -2,12 +2,12 @@
   <div class="d-flex justify-content-between">
     <div class="d-flex">
       <!-- Display user profile picture -->
-      <%= image_tag 'user-pp.jpeg', class: "img-thumbnail rounded-circle", style: "width: 2.5rem; max-height: 2.5rem" %>
+      <%= image_tag comment.user.profile_pic.attached? ? comment.user.profile_pic : 'user-pp.jpeg', class: "img-thumbnail rounded-circle", style: "width: 2.5rem; max-height: 2.5rem" %>
       <div class="d-flex flex-column mx-3 justify-content-center">
         <!-- Display username with ellipsis if too long -->
         <small class="fw-bold" style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 10rem">
           <!-- Link to user profile -->
-          <%= link_to comment.user, class: "a-decoration-none" do %>
+          <%= link_to comment.user, class: "a-decoration-none", data: {turbo: 'false'} do %>
             <%= comment.user.username %>
           <% end %>
         </small>
