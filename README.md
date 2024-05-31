@@ -1,4 +1,4 @@
-# README
+<img width="1365" alt="feed" src="https://github.com/eduardowanderleyde/instagram/assets/103546791/c6f882a1-1721-44b6-968e-c1f7b36d2d55"># README
 Instagram Clone
 
 
@@ -26,4 +26,16 @@ Instagram Clone
 12. **bootstrap (~> 5.3.0)**: Bootstrap framework for front-end development.
 13. **sassc-rails**: Integrator for the SassC compiler.
 14. **debug**: Debugging tool for development.
+
+  Working
+
+![Uploading Captura de Tela 2024-05-28 às 18.02.53.png…]()
+<img width="1365" alt="post" src="https://github.com/eduardowanderleyde/instagram/assets/103546791/d0856b05-a12c-43e0-81cb-49865824d205">
+
+
+https://github.com/eduardowanderleyde/instagram/assets/103546791/1ae98ad6-a2a5-4a07-995e-ddbd687ff44f
+
+<img width="1512" alt="stranger" src="https://github.com/eduardowanderleyde/instagram/assets/103546791/4a6873f5-b55b-46fa-80c2-edda2eca3051">
+<img width="1365" alt="profile" src="https://github.com/eduardowanderleyde/instagram/assets/103546791/bf08d77b-4f39-42c7-baef-45506815ba26">
+<img width="1485" alt="likes" src="https://github.com/eduardowanderleyde/instagram/assets/103546791/4378f655-ea82-43dc-a19b-afb4b2efbda5">
 
