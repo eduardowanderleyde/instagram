@@ -16,14 +16,20 @@ gem "tzinfo-data", platforms: %i[ windows jruby ]
 gem "bootsnap", require: false
 gem "bootstrap", "~> 5.3.0"
 gem 'sassc-rails'
+
 group :development, :test do
   gem "debug", platforms: %i[ mri windows ]
+  gem 'rspec-rails', '~> 6.0.0'
+  gem 'factory_bot_rails'
 end
+
 group :development do
   gem "web-console"
 end
+
 group :test do
   gem "capybara"
   gem "selenium-webdriver"
 end
+
 gem "tailwindcss-rails", "~> 2.6"
