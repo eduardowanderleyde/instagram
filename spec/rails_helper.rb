@@ -1,3 +1,4 @@
+# spec/rails_helper.rb
 require 'spec_helper'
 ENV['RAILS_ENV'] ||= 'test'
 require_relative '../config/environment'
@@ -43,6 +44,8 @@ RSpec.configure do |config|
   # Adicione estas linhas para incluir os helpers do Devise nos testes
   config.include Devise::Test::ControllerHelpers, type: :controller
   config.include Devise::Test::IntegrationHelpers, type: :request
+  config.include Devise::Test::ControllerHelpers, type: :view  # Adicione esta linha
+  config.include Devise::Test::IntegrationHelpers, type: :view  # Adicione esta linha
 
   config.fixture_path = "#{::Rails.root}/spec/fixtures"
   config.use_transactional_fixtures = true
