@@ -1,7 +1,7 @@
 # syntax = docker/dockerfile:1
 
 # Make sure RUBY_VERSION matches the Ruby version in .ruby-version and Gemfile
-ARG RUBY_VERSION=3.1.3
+ARG RUBY_VERSION=3.2.2
 FROM registry.docker.com/library/ruby:$RUBY_VERSION-slim as base
 
 # Rails app lives here
@@ -39,3 +39,38 @@ RUN chmod +x bin/* && \
 
 # Set build arguments for secret keys
 ARG SECRET_KEY_BASE
+ARG RAILS_MASTER_KEY
+
+# Ensure the environment variables are available during the build
+ENV SECRET_KEY_BASE=$SECRET_KEY_BASE
+ENV RAILS_MASTER_KEY=$RAILS_MASTER_KEY
+
+# Debug das variáveis (opcional, pode ser removido depois)
+RUN echo $SECRET_KEY_BASE && echo $RAILS_MASTER_KEY
+
+# Precompiling assets for production using secret keys
+RUN SECRET_KEY_BASE=$SECRET_KEY_BASE RAILS_MASTER_KEY=$RAILS_MASTER_KEY ./bin/rails assets:precompile
+
+# Final stage for app image
+FROM base
+
+# Install packages needed for deployment
+RUN apt-get update -qq && \
+    apt-get install --no-install-recommends -y curl libsqlite3-0 libvips && \
+    rm -rf /var/lib/apt/lists /var/cache/apt/archives
+
+# Copy built artifacts: gems, application
+COPY --from=build /usr/local/bundle /usr/local/bundle
+COPY --from=build /rails /rails
+
+# Run and own only the runtime files as a non-root user for security
+RUN useradd rails --create-home --shell /bin/bash && \
+    chown -R rails:rails db log storage tmp
+USER rails:rails
+
+# Entrypoint prepares the database.
+ENTRYPOINT ["/rails/bin/docker-entrypoint"]
+
+# Start the server by default, this can be overwritten at runtime
+EXPOSE 3000
+CMD ["./bin/rails", "server"]
