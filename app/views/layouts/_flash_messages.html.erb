@@ -1,9 +1,9 @@
 <% if notice && notice.is_a?(Array) %>
   <% notice.each do |n| %>
-    <p class="alert alert-sucess"><%= n %></p>
+    <p class="alert alert-success"><%= n %></p>
   <% end %>
 <% elsif notice && notice.is_a?(String) %>
-  <p class="alert alert-sucess"><%= notice %></p>
+  <p class="alert alert-success"><%= notice %></p>
 <% end %>
 
 <% if alert && alert.is_a?(Array) %>
