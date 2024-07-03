@@ -37,9 +37,6 @@ RUN chmod +x bin/* && \
     sed -i "s/\r$//g" bin/* && \
     sed -i 's/ruby\.exe$/ruby/' bin/*
 
-# Precompiling assets for production
-RUN ./bin/rails assets:precompile
-
 # Final stage for app image
 FROM base
 
@@ -52,13 +49,17 @@ RUN apt-get update -qq && \
 COPY --from=build /usr/local/bundle /usr/local/bundle
 COPY --from=build /rails /rails
 
+# Add the entrypoint script
+COPY docker-entrypoint.sh /usr/bin/
+RUN chmod +x /usr/bin/docker-entrypoint.sh
+
 # Run and own only the runtime files as a non-root user for security
 RUN useradd rails --create-home --shell /bin/bash && \
     chown -R rails:rails db log storage tmp
 USER rails:rails
 
-# Entrypoint prepares the database.
-ENTRYPOINT ["/rails/bin/docker-entrypoint"]
+# Entrypoint prepares the database and precompiles assets.
+ENTRYPOINT ["/usr/bin/docker-entrypoint.sh"]
 
 # Start the server by default, this can be overwritten at runtime
 EXPOSE 3000
