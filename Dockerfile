@@ -37,7 +37,7 @@ RUN chmod +x bin/* && \
     sed -i "s/\r$//g" bin/* && \
     sed -i 's/ruby\.exe$/ruby/' bin/*
 
-# Precompiling assets for production without using secret keys
+# Precompiling assets for production
 RUN ./bin/rails assets:precompile
 
 # Final stage for app image
