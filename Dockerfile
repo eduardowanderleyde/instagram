@@ -37,19 +37,8 @@ RUN chmod +x bin/* && \
     sed -i "s/\r$//g" bin/* && \
     sed -i 's/ruby\.exe$/ruby/' bin/*
 
-# Set build arguments for secret keys
-ARG SECRET_KEY_BASE
-ARG RAILS_MASTER_KEY
-
-# Ensure the environment variables are available during the build
-ENV SECRET_KEY_BASE=$SECRET_KEY_BASE
-ENV RAILS_MASTER_KEY=$RAILS_MASTER_KEY
-
-# Debug das variáveis (opcional, pode ser removido depois)
-RUN echo $SECRET_KEY_BASE && echo $RAILS_MASTER_KEY
-
-# Precompiling assets for production using secret keys
-RUN SECRET_KEY_BASE=$SECRET_KEY_BASE RAILS_MASTER_KEY=$RAILS_MASTER_KEY ./bin/rails assets:precompile
+# Precompiling assets for production without using secret keys
+RUN ./bin/rails assets:precompile
 
 # Final stage for app image
 FROM base
