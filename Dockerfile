@@ -56,6 +56,7 @@ RUN chmod +x /usr/bin/docker-entrypoint.sh
 # Run and own only the runtime files as a non-root user for security
 RUN useradd rails --create-home --shell /bin/bash && \
     chown -R rails:rails db log storage tmp
+RUN mkdir -p app/assets/builds && chown -R rails:rails app/assets/builds
 USER rails:rails
 
 # Entrypoint prepares the database and precompiles assets.
