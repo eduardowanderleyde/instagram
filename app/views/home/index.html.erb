@@ -1,12 +1,19 @@
-<%= render "layouts/flash_messages" %>
-<div class="d-flex my-5 justify-content-center gap-5">
-  <div class="d-flex flex-column gap-3">
+<div class="container mx-auto max-w-lg py-8">
+  <%= render "layouts/flash_messages" %>
+  <div class="space-y-6">
     <%= render "story/stories_list" %>
-    <div class="flex flex-column">
-      <% @feeds.each do |p| %>
+    <% (@posts || []).each do |p| %>
+      <div class="bg-white rounded-lg shadow p-4 mb-4">
         <%= render 'posts/post', post: p %>
-      <% end %>
+      </div>
+    <% end %>
+    <div class="flex justify-center mt-4">
+      <%= paginate @posts %>
     </div>
   </div>
-  <%= render "suggestions/suggestions_list", suggestions: @suggestions %>
+  <% if defined?(@suggestions) && @suggestions.present? %>
+    <div class="mt-8">
+      <%= render "suggestions/suggestions_list", suggestions: @suggestions %>
+    </div>
+  <% end %>
 </div>

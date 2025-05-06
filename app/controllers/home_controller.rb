@@ -1,15 +1,21 @@
 class HomeController < ApplicationController
-  before_action :set_suggestions
-  before_action :set_feeds
+  skip_before_action :authenticate_user!, only: [:index]
+  before_action :set_suggestions, if: :user_signed_in?
 
   def index
+    if user_signed_in?
+      @posts = Post.where(user: current_user.following + [current_user])
+                   .order(created_at: :desc)
+                   .includes(:user, :likes, :comments)
+                   .page(params[:page]).per(10)
+    else
+      @posts = Post.all.order(created_at: :desc)
+                   .includes(:user, :likes, :comments)
+                   .page(params[:page]).per(10)
+    end
   end
 
   private
-
-  def set_feeds
-    @feeds = Post.where(user: [current_user, current_user.followings].flatten).order(created_at: :desc)
-  end
 
   def set_suggestions
     @suggestions = [current_user.followers]
