@@ -1,5 +1,5 @@
 <% unless post.nil? %>
-  <div class="mb-8" id="<%= dom_id post %>">
+  <div class="mb-8" id="<%= dom_id post %>" data-controller="like">
     <div class="bg-white rounded-lg shadow p-4">
       <!-- Header com usuário -->
       <div class="flex items-center justify-between mb-2">
@@ -24,7 +24,7 @@
 
       <!-- Imagem do post (primeira imagem) -->
       <% if post.images.attached? %>
-        <div class="w-full flex justify-center mb-4">
+        <div class="w-full flex justify-center mb-4" data-action="dblclick->like#like">
           <%= image_tag post.images.first, class: "rounded-lg object-cover max-h-96 w-full" %>
         </div>
       <% end %>
@@ -45,10 +45,3 @@
     </div>
   </div>
 <% end %>
-
-<!-- Script to handle double-click on the carousel to like the post -->
-<script>
-  document.getElementById("post<%= post.id %>_images").addEventListener("dblclick", function(){
-    document.getElementById("post<%= post.id %>actions-likeBtn").click();
-  });
-</script>

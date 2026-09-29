@@ -23,13 +23,20 @@ Clone do Instagram em **Rails 7.1 / Ruby 3.2.2**.
 
 ## Rodando localmente
 
+Com Ruby 3.2.2 instalado (ex.: macOS com rbenv):
+
 ```bash
 bundle install
 bin/rails db:prepare
 bin/dev            # rails server + tailwindcss:watch (Procfile.dev)
+
+# Rodar a suíte RSpec
+bin/rails tailwindcss:build
+RAILS_ENV=test bin/rails db:schema:load
+bundle exec rspec --exclude-pattern "spec/system/**/*_spec.rb"
 ```
 
-Nesta máquina (Windows) **não há Ruby instalado**. Use Docker:
+Sem Ruby local (ex.: Windows), use Docker:
 
 ```bash
 # Rodar a suíte RSpec (Git Bash)
@@ -52,6 +59,7 @@ MSYS_NO_PATHCONV=1 docker run --rm -v "$(pwd -W):/app" -w /app ruby:3.2.2-slim b
 - **Factory de usuário é privada por padrão:** o default da coluna `users.private` é `true`. Em specs, use `create(:user, private: false)` quando o viewer não segue o dono.
 - **`force_ssl` em produção:** requisições HTTP recebem 301. Para testar o container localmente, mande `X-Forwarded-Proto: https`.
 - **Checar exit code:** ao verificar builds (`docker build ... | tail`), o pipe esconde falhas. Redirecione para arquivo e cheque `$?`.
+- **Bundler 2.5.x trava** com `undefined method 'name' for nil:NilClass` neste lockfile multiplataforma. Use o bundler 2.6.9 ou mais novo (`gem update --system` ou `bundle _2.7.2_ install`).
 - **Plataformas no lockfile:** `Gemfile.lock` precisa manter `x86_64-linux` e `aarch64-linux`, além de `arm64-darwin`, senão o build Docker quebra.
 - **Duas suítes de teste:** `spec/` (RSpec, a mantida) e `test/` (Minitest, scaffold antigo).
 
@@ -93,7 +101,7 @@ MSYS_NO_PATHCONV=1 docker run --rm -v "$(pwd -W):/app" -w /app ruby:3.2.2-slim b
 
 - [ ] **Views com Bootstrap sem estilo.** O layout só carrega `tailwind.css`, mas navbar, dropdown de busca, modais, telas do Devise, `posts/_form`, `_liker`, `_modal_comment` e `_search_results` usam classes e JS do Bootstrap. Recomendado migrar para Tailwind + Stimulus. Não carregar o CSS do Bootstrap junto: a classe `collapse` do Tailwind conflita com a navbar do Bootstrap.
 - [ ] **Font Awesome** (`fa-solid`, `fa-brands`) é usado na navbar, mas não é carregado em lugar nenhum.
-- [ ] `_post.html.erb` tem um `<script>` inline que procura `post<id>_images`, elemento que não existe mais. Isso dá erro de JS e quebra o duplo clique para curtir. Mover para um controller Stimulus.
+- [x] Duplo clique para curtir: movido do `<script>` inline (que quebrava) para `like_controller.js` (Stimulus).
 - [ ] `_post.html.erb` mostra só a primeira imagem; o carrossel foi perdido na migração para Tailwind.
 - [ ] Depois de migrar, remover `bootstrap` e `@popperjs/core` do importmap e de `vendor/javascript`, e revisar `custom.scss`, `filepond*.scss` e a gem `sassc`.
 
@@ -115,4 +123,4 @@ MSYS_NO_PATHCONV=1 docker run --rm -v "$(pwd -W):/app" -w /app ruby:3.2.2-slim b
 - [ ] Adicionar CI (GitHub Actions) rodando RSpec + `docker build`.
 - [ ] Active Storage em produção usa disco local; configurar S3/GCS ou volume persistente.
 - [ ] Atualizar o README (ainda cita Bootstrap e SQLite; sem instruções de setup/deploy).
-- [ ] Abrir PR de `fix/deploy-e-autorizacao` → `master` (ainda não foi feito push).
+- [x] Abrir PR de `fix/deploy-e-autorizacao` → `master` ([#1](https://github.com/eduardowanderleyde/instagram/pull/1)).
