@@ -1,5 +1,6 @@
 class LikesController < ApplicationController
   before_action :set_post
+  before_action :authorize_viewer!
 
   def toggle_like
     if (@like = @post.likes.find_by(user: current_user))
@@ -24,5 +25,9 @@ class LikesController < ApplicationController
 
   def set_post
     @post = Post.find(params[:post_id])
+  end
+
+  def authorize_viewer!
+    head :forbidden unless @post.user.visible_to?(current_user)
   end
 end

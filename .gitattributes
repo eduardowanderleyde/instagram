@@ -10,3 +10,5 @@ config/credentials.yml.enc diff=rails_credentials
 
 # Shell scripts run inside Linux containers must keep LF line endings.
 *.sh text eol=lf
+bin/* text eol=lf
+bin/*.cmd text eol=crlf
