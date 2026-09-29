@@ -4,7 +4,7 @@ Guia para agentes de IA e devs que forem trabalhar neste repositório.
 
 ## Visão geral
 
-Clone do Instagram em **Rails 7.1 / Ruby 3.2.2**.
+Clone do Instagram em **Rails 7.2 / Ruby 3.2.2**.
 
 - **Auth:** Devise (`username`, `full_name`, `phone_number`, `bio`, `private`, `profile_pic`)
 - **Modelos:** `User`, `Post` (várias imagens via Active Storage), `Like`, `Comment`, `Follow` (com `accepted` para perfis privados)
@@ -60,6 +60,7 @@ MSYS_NO_PATHCONV=1 docker run --rm -v "$(pwd -W):/app" -w /app ruby:3.2.2-slim b
 - **`force_ssl` em produção:** requisições HTTP recebem 301. Para testar o container localmente, mande `X-Forwarded-Proto: https`.
 - **Checar exit code:** ao verificar builds (`docker build ... | tail`), o pipe esconde falhas. Redirecione para arquivo e cheque `$?`.
 - **Bundler 2.5.x trava** com `undefined method 'name' for nil:NilClass` neste lockfile multiplataforma. Use o bundler 2.6.9 ou mais novo (`gem update --system` ou `bundle _2.7.2_ install`).
+- **Tailwind travado em v3:** `tailwindcss-rails` está em `~> 2.6`. A 4.x traz o Tailwind v4, que tem breaking changes no CSS; só suba com migração planejada.
 - **Plataformas no lockfile:** `Gemfile.lock` precisa manter `x86_64-linux` e `aarch64-linux`, além de `arm64-darwin`, senão o build Docker quebra.
 - **Duas suítes de teste:** `spec/` (RSpec, a mantida) e `test/` (Minitest, scaffold antigo).
 
@@ -95,6 +96,19 @@ MSYS_NO_PATHCONV=1 docker run --rm -v "$(pwd -W):/app" -w /app ruby:3.2.2-slim b
 
 **Status verificado:** 60 exemplos RSpec passando (sem o system spec). A imagem Docker compila, sobe contra Postgres 16, e `/`, `/users/sign_in` e o CSS respondem 200.
 
+### Correção das vulnerabilidades do Dependabot (2026-09-29)
+
+75 alertas abertos, todos no `Gemfile.lock` (4 críticos, 19 altos).
+
+- **Rails 7.1 → 7.2.3:** a linha 7.1 saiu de suporte, e os alertas críticos e altos de Active Storage e Active Support só têm correção a partir de 7.2.3.1/7.2.3.2.
+- **Puma ≥ 7.2.1:** sem backport para a 6.x.
+- **Devise ≥ 5.0.4:** as falhas eram em `timeoutable` e `confirmable`, que o app não usa, mas o Devise 4 também gerava o aviso de `secrets`.
+- **sqlite3 ≥ 2.9.5**, apenas em dev/test.
+- **Removida a gem `webdrivers`,** que travava `rubyzip < 3.0` (path traversal).
+- **Demais gems** (nokogiri, rack, rack-session, net-imap, websocket-driver etc.): `bundle update` dentro das faixas permitidas.
+
+Verificado localmente no macOS: 60 specs passando e `eager_load!` sem erros. Em dev, cadastro, feed, post com imagem, like e comentário (Turbo Stream) respondem 200.
+
 ## TODO
 
 ### Visual / front
@@ -113,13 +127,14 @@ MSYS_NO_PATHCONV=1 docker run --rm -v "$(pwd -W):/app" -w /app ruby:3.2.2-slim b
 - [ ] `username` sem validação de presença ou unicidade e sem índice único.
 - [ ] Busca de usuários (`UsersController#index`) usa `LIKE` sem escapar `%` e `_`; limitar resultados.
 - [ ] `FollowsController`: `find` de um follow inexistente ou alheio levanta `RecordNotFound` (404). Avaliar resposta mais amigável.
-- [ ] `config.fixture_path` está deprecado no `rails_helper.rb`; usar `fixture_paths`.
-- [ ] Aviso de deprecação: `Rails.application.secrets` (Rails 7.2 remove).
+- [x] `config.fixture_path` → `fixture_paths` no `rails_helper.rb`.
+- [x] Aviso de `Rails.application.secrets` (vinha do Devise 4; resolvido com Devise 5).
+- [ ] Rails 7.2 sai de suporte de segurança em ago/2026 (já passou): planejar ida para Rails 8.x.
 
 ### Infra / testes
 
 - [ ] Decidir entre `spec/` (RSpec) e `test/` (Minitest); remover a suíte morta.
-- [ ] System spec (`spec/system/user_login_spec.rb`) precisa de Chrome headless; configurar ou mudar para `rack_test`. A gem `webdrivers` está obsoleta com Selenium 4.
+- [ ] System spec (`spec/system/user_login_spec.rb`) precisa de Chrome headless; configurar ou mudar para `rack_test`. (A gem `webdrivers` foi removida; o Selenium 4 baixa o driver sozinho.)
 - [ ] Adicionar CI (GitHub Actions) rodando RSpec + `docker build`.
 - [ ] Active Storage em produção usa disco local; configurar S3/GCS ou volume persistente.
 - [ ] Atualizar o README (ainda cita Bootstrap e SQLite; sem instruções de setup/deploy).
