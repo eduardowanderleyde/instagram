@@ -100,7 +100,7 @@ MSYS_NO_PATHCONV=1 docker run --rm -v "$(pwd -W):/app" -w /app ruby:3.2.2-slim b
 
 75 alertas abertos, todos no `Gemfile.lock` (4 críticos, 19 altos).
 
-- **Rails 7.1 → 7.2.3:** a linha 7.1 saiu de suporte, e os alertas críticos e altos de Active Storage e Active Support só têm correção a partir de 7.2.3.1/7.2.3.2.
+- **Rails 7.1 → 7.2.3.2:** a linha 7.1 saiu de suporte, e os alertas críticos e altos de Active Storage e Active Support só têm correção a partir de 7.2.3.1/7.2.3.2.
 - **Puma ≥ 7.2.1:** sem backport para a 6.x.
 - **Devise ≥ 5.0.4:** as falhas eram em `timeoutable` e `confirmable`, que o app não usa, mas o Devise 4 também gerava o aviso de `secrets`.
 - **sqlite3 ≥ 2.9.5**, apenas em dev/test.
