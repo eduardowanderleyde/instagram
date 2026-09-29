@@ -1,6 +1,8 @@
 class PostsController < ApplicationController
   before_action :authenticate_user!, only: [:new, :create]
   before_action :set_post, only: [:show, :edit, :update, :destroy]
+  before_action :authorize_owner!, only: [:edit, :update, :destroy]
+  before_action :authorize_viewer!, only: [:show]
 
   # GET /posts or /posts.json
   def index
@@ -50,7 +52,6 @@ class PostsController < ApplicationController
 
   # DELETE /posts/1 or /posts/1.json
   def destroy
-    return if current_user != @post.user
     @post.destroy!
 
     respond_to do |format|
@@ -65,8 +66,16 @@ class PostsController < ApplicationController
       @post = Post.find(params[:id])
     end
 
+    def authorize_owner!
+      redirect_to root_path, alert: "Você não tem permissão para alterar este post." unless @post.user == current_user
+    end
+
+    def authorize_viewer!
+      redirect_to root_path, alert: "Este perfil é privado." unless @post.user.visible_to?(current_user)
+    end
+
     # Only allow a list of trusted parameters through.
     def post_params
-      params.require(:post).permit(:caption, :longitude, :latitude, :user_id, :allow_comments, :show_likes_count, images:[])
+      params.require(:post).permit(:caption, :longitude, :latitude, :allow_comments, :show_likes_count, images:[])
     end
 end

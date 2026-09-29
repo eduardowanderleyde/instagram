@@ -32,6 +32,9 @@ COPY . .
 # Precompile bootsnap code for faster boot times
 RUN bundle exec bootsnap precompile app/ lib/
 
+# Precompile assets (Tailwind + Sprockets) without requiring RAILS_MASTER_KEY
+RUN SECRET_KEY_BASE_DUMMY=1 ./bin/rails assets:precompile
+
 # Adjust binfiles to be executable on Linux
 RUN chmod +x bin/* && \
     sed -i "s/\r$//g" bin/* && \
@@ -59,7 +62,7 @@ RUN useradd rails --create-home --shell /bin/bash && \
 RUN mkdir -p app/assets/builds && chown -R rails:rails app/assets/builds
 USER rails:rails
 
-# Entrypoint prepares the database and precompiles assets.
+# Entrypoint prepares the database.
 ENTRYPOINT ["/usr/bin/docker-entrypoint.sh"]
 
 # Start the server by default, this can be overwritten at runtime

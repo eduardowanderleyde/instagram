@@ -13,6 +13,7 @@ RSpec.describe PostsController, type: :controller do
     it "returns a success response" do
       user = create(:user)
       post = create(:post, user: user)
+      sign_in user
       get :show, params: { id: post.id }
       expect(response).to be_successful
     end

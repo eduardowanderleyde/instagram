@@ -4,12 +4,13 @@ class HomeController < ApplicationController
 
   def index
     if user_signed_in?
-      @posts = Post.where(user: current_user.following + [current_user])
+      @posts = Post.where(user: current_user.followings + [current_user])
                    .order(created_at: :desc)
                    .includes(:user, :likes, :comments)
                    .page(params[:page]).per(10)
     else
-      @posts = Post.all.order(created_at: :desc)
+      @posts = Post.joins(:user).where(users: { private: false })
+                   .order(created_at: :desc)
                    .includes(:user, :likes, :comments)
                    .page(params[:page]).per(10)
     end
