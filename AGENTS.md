@@ -68,6 +68,8 @@ MSYS_NO_PATHCONV=1 docker run --rm -v "$(pwd -W):/app" -w /app ruby:3.2.2-slim b
 - **Plataformas no lockfile:** `Gemfile.lock` precisa manter `x86_64-linux` e `aarch64-linux`, além de `arm64-darwin`, senão o build Docker quebra.
 - **Cache do Sprockets após remover arquivos:** no container de dev, apagar ou renomear assets (ex.: os `.scss`) pode causar 500 `cannot load such file -- sassc`. Resolve com `rm -rf tmp/cache/assets` e reiniciar o servidor.
 - **Checkbox dentro de `<details>` fechado** é "invisível" para o Capybara; use `visible: :all` nos specs.
+- **Espaço em disco no Windows:** o disco do Docker Desktop (WSL) cresce e não encolhe sozinho. Com o C: cheio o Docker cai ("Docker Desktop is unable to start"). Use `docker image prune -a` e `docker builder prune` antes de baixar imagens grandes (a do Playwright tem cerca de 2 GB).
+- **`server.pid` órfão:** se o container de dev morrer, `docker start` falha com "A server is already running". Apague `tmp/pids/server.pid`.
 - **Duas suítes de teste:** `spec/` (RSpec, a mantida) e `test/` (Minitest, scaffold antigo).
 
 ## Deploy (Docker)
@@ -126,7 +128,9 @@ Verificado localmente no macOS: 60 specs passando e `eager_load!` sem erros. Em 
 - **Bug corrigido:** quando a criação de post falhava, o controller redirecionava com 422, que o Turbo não segue.
 - Novos specs: `spec/requests/pages_smoke_spec.rb` (renderiza as páginas principais logado e deslogado) e `spec/requests/registrations_spec.rb`.
 
-**Status verificado:** 64 exemplos RSpec passando e build Docker de produção OK. A conferência visual com screenshots ficou pendente (ver TODO).
+- `spec/fixtures/files/test_image.jpg` tinha 0 bytes (imagem quebrada nos dados de teste); trocado por um JPEG real.
+
+**Status verificado:** 64 exemplos RSpec passando e build Docker de produção OK. Screenshots com Chrome headless (Playwright) de login, cadastro, feed, pedidos de follow, modal de novo post, busca, carrossel, modal de curtidas, perfil, configurações e mobile, sem erros de JS no console.
 
 ## TODO
 
@@ -134,7 +138,7 @@ Verificado localmente no macOS: 60 specs passando e `eager_load!` sem erros. Em 
 
 - [x] Views migradas de Bootstrap para Tailwind + Stimulus.
 - [x] Font Awesome carregado no layout.
-- [ ] **Conferir o visual no navegador** (login, cadastro, feed, modais, perfil, configurações, mobile). Os testes cobrem a renderização, mas ninguém viu as telas ainda.
+- [x] Visual conferido via screenshots (Playwright em Docker; ver "Armadilhas" para o espaço em disco).
 - [ ] Navbar no mobile: a busca fica escondida abaixo de `sm`; avaliar um ícone de busca ou uma barra inferior.
 - [ ] "Forgot password?" e "Log in with Facebook" são links `#` (sem mailer nem OAuth configurados).
 - [ ] Stories são placeholders fixos (`story/_story`).
