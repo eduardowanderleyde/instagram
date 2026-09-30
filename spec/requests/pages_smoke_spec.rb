@@ -17,6 +17,10 @@ RSpec.describe "Pages smoke test", type: :request do
       get root_path
       expect(response).to have_http_status(:ok)
 
+      # Like/comentário de visitante levam ao login fora do turbo-frame
+      expect(response.body).not_to include("toggle_like")
+      expect(Nokogiri::HTML(response.body).css('a[href="/users/sign_in"][data-turbo-frame="_top"]')).to be_present
+
       get new_user_session_path
       expect(response).to have_http_status(:ok)
 

@@ -45,14 +45,20 @@
       </time>
     </div>
 
-    <%# Formulário de comentário %>
-    <%= form_with url: comments_path, method: :post, class: "border-t border-gray-200",
-          data: { controller: "comments", action: "turbo:submit-end->comments#clear" } do |f| %>
-      <div class="flex items-center gap-2 px-4 py-2">
-        <%= f.hidden_field :post_id, value: post.id %>
-        <%= f.text_area :comment_body, rows: 1, placeholder: "Adicione um comentário...", required: true,
-              id: dom_id(post, :comment_body), class: "flex-1 resize-none border-0 px-0 text-sm focus:ring-0" %>
-        <%= f.submit "Postar", class: "btn-link text-sm font-semibold" %>
+    <%# Formulário de comentário (visitante vê link para o login) %>
+    <% if current_user %>
+      <%= form_with url: comments_path, method: :post, class: "border-t border-gray-200",
+            data: { controller: "comments", action: "turbo:submit-end->comments#clear" } do |f| %>
+        <div class="flex items-center gap-2 px-4 py-2">
+          <%= f.hidden_field :post_id, value: post.id %>
+          <%= f.text_area :comment_body, rows: 1, placeholder: "Adicione um comentário...", required: true,
+                id: dom_id(post, :comment_body), class: "flex-1 resize-none border-0 px-0 text-sm focus:ring-0" %>
+          <%= f.submit "Postar", class: "btn-link text-sm font-semibold" %>
+        </div>
+      <% end %>
+    <% else %>
+      <div class="border-t border-gray-200 px-4 py-3 text-sm text-gray-500">
+        <%= link_to "Entre", new_user_session_path, class: "font-semibold text-blue-500" %> para curtir e comentar.
       </div>
     <% end %>
   </article>

@@ -1,17 +1,27 @@
 <%= turbo_frame_tag "post#{post.id}actions" do %>
   <div data-controller="modal">
     <div class="flex items-center gap-4 text-2xl">
-      <%= button_to toggle_like_path(post_id: post.id), method: :post, class: "hover:opacity-60",
-            id: "post#{post.id}actions-likeBtn", "aria-label": "Like", data: { like_target: "button" } do %>
-        <% if post.likes.any? { |like| like.user_id == current_user&.id } %>
-          <i class="fa-solid fa-heart text-red-500"></i>
-        <% else %>
+      <% if current_user %>
+        <%= button_to toggle_like_path(post_id: post.id), method: :post, class: "hover:opacity-60",
+              id: "post#{post.id}actions-likeBtn", "aria-label": "Like", data: { like_target: "button" } do %>
+          <% if post.likes.any? { |like| like.user_id == current_user.id } %>
+            <i class="fa-solid fa-heart text-red-500"></i>
+          <% else %>
+            <i class="fa-regular fa-heart"></i>
+          <% end %>
+        <% end %>
+        <label for="<%= dom_id(post, :comment_body) %>" class="cursor-pointer hover:opacity-60" aria-label="Comment">
+          <i class="fa-regular fa-comment fa-flip-horizontal"></i>
+        </label>
+      <% else %>
+        <%# Visitante: leva ao login fora do turbo-frame (senão o Turbo mostra "Content missing") %>
+        <%= link_to new_user_session_path, class: "hover:opacity-60", "aria-label": "Log in to like", data: { turbo_frame: "_top" } do %>
           <i class="fa-regular fa-heart"></i>
         <% end %>
+        <%= link_to new_user_session_path, class: "hover:opacity-60", "aria-label": "Log in to comment", data: { turbo_frame: "_top" } do %>
+          <i class="fa-regular fa-comment fa-flip-horizontal"></i>
+        <% end %>
       <% end %>
-      <label for="<%= dom_id(post, :comment_body) %>" class="cursor-pointer hover:opacity-60" aria-label="Comment">
-        <i class="fa-regular fa-comment fa-flip-horizontal"></i>
-      </label>
     </div>
 
     <button type="button" class="mt-1 text-sm font-semibold" data-action="modal#open">
