@@ -52,8 +52,6 @@ gem "devise", ">= 5.0.4"
 # Active Storage validators
 gem 'activestorage-validator'
 
-gem 'sassc'
-
 gem 'kaminari'
 
 group :development, :test do

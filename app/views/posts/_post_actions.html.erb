@@ -1,32 +1,38 @@
 <%= turbo_frame_tag "post#{post.id}actions" do %>
-  <div class="d-flex justify-content-start align-items-center gap-1 mb-2">
-    <%= button_to toggle_like_path(post_id: post.id), method: :post, style: "border:none; background: none", id: "post#{post.id}actions-likeBtn", data: { like_target: "button" } do %>
-      <i class="<%= post.likes.find_by(user: current_user) ? "fa-solid color-red" : "fa-regular" %> fa-heart fa-xl"></i>
-    <% end %>
-    <a href="#" data-bs-toggle="modal" data-bs-target="#post<%= post.id %>_commentsModal" style="text-decoration:none">
-      <i class="fa-regular fa-comment fa-xl fa-flip-horizontal text-dark"></i>
-    </a>
-  </div>
-  <a href="#" data-bs-toggle="modal" data-bs-target="#post<%= post.id %>_likesModal" style="text-decoration:none" class="text-dark">
-    <small class="fw-bold"><%= pluralize(post.likes.count, 'like') %></small>
-  </a>
-
-  <!-- Modal -->
-  <div class="modal fade" id="post<%= post.id %>_likesModal" tabindex="-1" aria-labelledby="post<%= post.id %>_likesModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="post<%= post.id %>_likesModalLabel">Post Likes</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-          <div class="d-flex flex-column gap-3">
-            <% post.likers.each do |liker| %>
-              <%= render "posts/liker", liker: liker %>
-            <% end %>
-          </div>
-        </div>
-      </div>
+  <div data-controller="modal">
+    <div class="flex items-center gap-4 text-2xl">
+      <%= button_to toggle_like_path(post_id: post.id), method: :post, class: "hover:opacity-60",
+            id: "post#{post.id}actions-likeBtn", "aria-label": "Like", data: { like_target: "button" } do %>
+        <% if post.likes.any? { |like| like.user_id == current_user&.id } %>
+          <i class="fa-solid fa-heart text-red-500"></i>
+        <% else %>
+          <i class="fa-regular fa-heart"></i>
+        <% end %>
+      <% end %>
+      <label for="<%= dom_id(post, :comment_body) %>" class="cursor-pointer hover:opacity-60" aria-label="Comment">
+        <i class="fa-regular fa-comment fa-flip-horizontal"></i>
+      </label>
     </div>
+
+    <button type="button" class="mt-1 text-sm font-semibold" data-action="modal#open">
+      <%= pluralize(post.likes.size, "like") %>
+    </button>
+
+    <dialog class="modal" data-modal-target="dialog" data-action="click->modal#backdropClose">
+      <div class="modal-header">
+        <span>Likes</span>
+        <button type="button" class="text-gray-500 hover:text-gray-900" aria-label="Close" data-action="modal#close">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+      <div class="flex max-h-96 flex-col gap-3 overflow-y-auto p-4">
+        <% post.likers.each do |liker| %>
+          <%= render "posts/liker", liker: liker %>
+        <% end %>
+        <% if post.likes.empty? %>
+          <p class="text-sm text-gray-500">No likes yet.</p>
+        <% end %>
+      </div>
+    </dialog>
   </div>
 <% end %>

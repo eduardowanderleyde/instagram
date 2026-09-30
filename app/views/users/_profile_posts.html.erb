@@ -1,28 +1,27 @@
-<div class="container d-flex flex-column">
-  <div class="d-flex justify-content-center align-items-center">
-    <div class="w-content border-2 border-top border-dark">
-      <i class="fa-solid fa-table-cells"></i>
-      <small>Posts</small>
-    </div>
+<section>
+  <div class="flex justify-center">
+    <span class="-mt-px flex items-center gap-2 border-t border-gray-900 py-3 text-xs font-semibold uppercase tracking-widest">
+      <i class="fa-solid fa-table-cells"></i> Posts
+    </span>
   </div>
 
-  <div class="row justify-content-center align-items-center">
-    <% user.posts.each do |post| %>
-      <div class="col-lg-4 col-md-6 col-sm-8 p-3 mb-4 profile-post", style="height:20rem;position:relative">
-        <%= link_to post do %>
-        <%= image_tag post.images.first, class: "img-thumbnail", style:"width-100%; height:20rem; object-fit:cover" %>
-          <div class="d-flex align-items-center justify-content-center gap-1 w-100 profile-post-likes">
-            <i class="fa-solid fa-heart fa-xl text-white"></i>
-            <small class="text-white fw-bold"><%= post.likes.count %></small>
-            <i class="fa-solid fa-comment fa-xl fa-flip-horizontal text-white"></i>
-            <small class="text-white fw-bold"><%= post.comments.count %></small>
-          </div>
-          <% if post.images.count > 1 %>
-            <i class="fa-solid fa-images text-white multiple-images"></i>
+  <% posts = user.posts.order(created_at: :desc).with_attached_images.includes(:likes, :comments) %>
+  <% if posts.empty? %>
+    <p class="py-16 text-center text-sm text-gray-500">No posts yet.</p>
+  <% else %>
+    <div class="grid grid-cols-3 gap-1 sm:gap-4">
+      <% posts.each do |post| %>
+        <%= link_to post, class: "group relative block aspect-square overflow-hidden bg-gray-100" do %>
+          <%= image_tag post.images.first, class: "h-full w-full object-cover" if post.images.attached? %>
+          <% if post.images.size > 1 %>
+            <i class="fa-solid fa-images absolute right-2 top-2 text-white drop-shadow"></i>
           <% end %>
-        <% end %>  
-      </div>
-    <% end %>
-
-  </div>
-</div>
+          <div class="absolute inset-0 hidden items-center justify-center gap-6 bg-black/40 font-semibold text-white group-hover:flex">
+            <span><i class="fa-solid fa-heart"></i> <%= post.likes.size %></span>
+            <span><i class="fa-solid fa-comment fa-flip-horizontal"></i> <%= post.comments.size %></span>
+          </div>
+        <% end %>
+      <% end %>
+    </div>
+  <% end %>
+</section>

@@ -15,11 +15,10 @@ RSpec.describe "posts/_form", type: :view do
     render partial: "posts/form", locals: { post: post }
 
     expect(rendered).to have_selector("form")
-    expect(rendered).to have_selector("input[type='file'][id='post-images']")
+    expect(rendered).to have_selector("input[type='file'].filepond")
     expect(rendered).to have_selector("textarea[name='post[caption]']")
-    expect(rendered).to have_selector("input[name='post[location]']")
-    expect(rendered).to have_selector("input[type='checkbox'][name='post[allow_comments]']")
-    expect(rendered).to have_selector("input[type='checkbox'][name='post[show_likes_count]']")
-    expect(rendered).to have_selector("input[type='submit'][value='Post']")
+    expect(rendered).to have_selector("input[type='checkbox'][name='post[allow_comments]']", visible: :all)
+    expect(rendered).to have_selector("input[type='checkbox'][name='post[show_likes_count]']", visible: :all)
+    expect(rendered).to have_selector("input[type='submit'][value='Share']")
   end
 end

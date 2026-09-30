@@ -1,27 +1,17 @@
-<div id="post<%= comment.post_id %>ModalComment<%= comment.id %>">
-  <div class="d-flex justify-content-between">
-    <div class="d-flex">
-      <!-- Display user profile picture -->
-      <%= image_tag comment.user.profile_pic.attached? ? comment.user.profile_pic : 'user-pp.jpeg', class: "img-thumbnail rounded-circle", style: "width: 2.5rem; max-height: 2.5rem" %>
-      <div class="d-flex flex-column mx-3 justify-content-center">
-        <!-- Display username with ellipsis if too long -->
-        <small class="fw-bold" style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 10rem">
-          <!-- Link to user profile -->
-          <%= link_to comment.user, class: "a-decoration-none", data: {turbo: 'false'} do %>
-            <%= comment.user.username %>
-          <% end %>
-        </small>
-        <!-- Display comment body -->
-        <small><%= comment.body %></small>
-        <!-- Display time ago the comment was created -->
-        <small class="text-muted"><%= time_ago_in_words(comment.created_at) %></small>
-      </div>
+<div id="post<%= comment.post_id %>ModalComment<%= comment.id %>" class="flex items-start justify-between gap-3">
+  <div class="flex min-w-0 items-start gap-3">
+    <%= avatar_tag comment.user, size: "w-8 h-8" %>
+    <div class="min-w-0 text-sm">
+      <p class="break-words">
+        <%= link_to comment.user.username, comment.user, class: "font-semibold", data: { turbo: false } %>
+        <%= comment.body %>
+      </p>
+      <p class="text-xs text-gray-500"><%= time_ago_in_words(comment.created_at) %> ago</p>
     </div>
-    <!-- Display delete button if the comment belongs to the current user -->
-    <% if comment.user == current_user %>
-      <%= button_to comment_path(id: comment.id), method: :delete, style: "background: none; border: none" do %>
-        <i class="fa fa-times"></i>
-      <% end %>
-    <% end %>
   </div>
+  <% if comment.user == current_user %>
+    <%= button_to comment_path(id: comment.id), method: :delete, class: "text-gray-400 hover:text-red-500", "aria-label": "Delete comment" do %>
+      <i class="fa-solid fa-xmark"></i>
+    <% end %>
+  <% end %>
 </div>

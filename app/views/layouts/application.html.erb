@@ -5,14 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
+    <%= stylesheet_link_tag "filepond", "filepond-plugin-image-preview", "data-turbo-track": "reload" %>
     <%= stylesheet_link_tag "tailwind", "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
   </head>
 
-  <body>
-  <% if current_user %>
-    <%= render "layouts/navbar" %> 
-  <% end %>
+  <body class="min-h-screen bg-gray-50 text-gray-900 antialiased">
+    <% if current_user %>
+      <%= render "layouts/navbar" %>
+    <% end %>
+    <%= render "layouts/flash_messages" %>
     <%= yield %>
   </body>
 </html>

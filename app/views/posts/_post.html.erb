@@ -1,47 +1,59 @@
 <% unless post.nil? %>
-  <div class="mb-8" id="<%= dom_id post %>" data-controller="like">
-    <div class="bg-white rounded-lg shadow p-4">
-      <!-- Header com usuário -->
-      <div class="flex items-center justify-between mb-2">
-        <div class="flex items-center">
-          <%= link_to post.user do %>
-            <% if post.user.profile_pic.attached? %>
-              <%= image_tag post.user.profile_pic, class: "w-10 h-10 rounded-full object-cover border" %>
-            <% else %>
-              <%= image_tag 'user-pp.jpeg', class: "w-10 h-10 rounded-full object-cover border" %>
+  <article class="card" id="<%= dom_id post %>" data-controller="like">
+    <%# Cabeçalho com usuário %>
+    <header class="flex items-center justify-between px-4 py-3">
+      <%= link_to post.user, class: "flex items-center gap-3" do %>
+        <%= avatar_tag post.user, size: "w-9 h-9" %>
+        <span class="text-sm font-semibold hover:underline"><%= post.user.username %></span>
+      <% end %>
+      <% if current_user == post.user %>
+        <%= button_to "Excluir", post, method: :delete, class: "text-sm text-red-500 hover:underline",
+              form: { data: { turbo_confirm: "Excluir este post?" } } %>
+      <% end %>
+    </header>
+
+    <%# Imagens (carrossel quando houver mais de uma); duplo clique curte %>
+    <% if post.images.attached? %>
+      <div class="relative bg-black" data-controller="carousel" data-action="dblclick->like#like">
+        <% post.images.each do |image| %>
+          <%= image_tag image, class: "max-h-[36rem] w-full object-contain", data: { carousel_target: "slide" } %>
+        <% end %>
+        <% if post.images.size > 1 %>
+          <button type="button" class="absolute left-2 top-1/2 flex h-7 w-7 -translate-y-1/2 items-center justify-center rounded-full bg-white/80 text-sm shadow"
+                  aria-label="Previous" data-carousel-target="prev" data-action="carousel#previous">
+            <i class="fa-solid fa-chevron-left"></i>
+          </button>
+          <button type="button" class="absolute right-2 top-1/2 flex h-7 w-7 -translate-y-1/2 items-center justify-center rounded-full bg-white/80 text-sm shadow"
+                  aria-label="Next" data-carousel-target="next" data-action="carousel#next">
+            <i class="fa-solid fa-chevron-right"></i>
+          </button>
+          <div class="absolute bottom-3 left-0 right-0 flex justify-center gap-1">
+            <% post.images.size.times do %>
+              <span class="h-1.5 w-1.5 rounded-full bg-gray-300" data-carousel-target="dot"></span>
             <% end %>
-          <% end %>
-          <%= link_to post.user, class: "ml-3 font-bold text-gray-800 hover:underline" do %>
-            <%= post.user.username %>
-          <% end %>
-        </div>
-        <% if current_user == post.user %>
-          <div class="relative">
-            <%= button_to 'Excluir', post, method: :delete, class: "text-red-500 hover:underline text-sm bg-transparent border-none p-0 m-0 cursor-pointer" %>
           </div>
         <% end %>
       </div>
+    <% end %>
 
-      <!-- Imagem do post (primeira imagem) -->
-      <% if post.images.attached? %>
-        <div class="w-full flex justify-center mb-4" data-action="dblclick->like#like">
-          <%= image_tag post.images.first, class: "rounded-lg object-cover max-h-96 w-full" %>
-        </div>
-      <% end %>
-
+    <div class="flex flex-col gap-1 px-4 py-3 text-sm">
       <%= render "posts/post_actions", post: post %>
-      <p class="mt-2"><span class="font-bold"><%= post.user.username %></span> <%= post.caption %></p>
+      <p><%= link_to post.user.username, post.user, class: "font-semibold" %> <%= post.caption %></p>
       <%= render "posts/post_comments", post: post %>
-      <small class="text-gray-500"><%= time_ago_in_words(post.created_at) %></small>
-
-      <!-- Formulário de comentário -->
-      <%= form_with url: comments_path, method: :post, data: {controller: "comments", action: "turbo:submit-end->comments#clear"}, class: "mt-3" do |f| %>
-        <div class="flex items-center gap-2">
-          <%= f.hidden_field :post_id, value: post.id %>
-          <%= f.text_area :comment_body, class: "flex-1 rounded border-gray-300 focus:ring focus:ring-blue-200 text-sm", placeholder: "Adicione um comentário...", rows: 1 %>
-          <%= f.submit "Postar", class: "text-blue-600 font-bold bg-transparent border-none cursor-pointer" %>
-        </div>
-      <% end %>
+      <time class="text-xs uppercase text-gray-500" datetime="<%= post.created_at.iso8601 %>">
+        <%= time_ago_in_words(post.created_at) %> ago
+      </time>
     </div>
-  </div>
+
+    <%# Formulário de comentário %>
+    <%= form_with url: comments_path, method: :post, class: "border-t border-gray-200",
+          data: { controller: "comments", action: "turbo:submit-end->comments#clear" } do |f| %>
+      <div class="flex items-center gap-2 px-4 py-2">
+        <%= f.hidden_field :post_id, value: post.id %>
+        <%= f.text_area :comment_body, rows: 1, placeholder: "Adicione um comentário...", required: true,
+              id: dom_id(post, :comment_body), class: "flex-1 resize-none border-0 px-0 text-sm focus:ring-0" %>
+        <%= f.submit "Postar", class: "btn-link text-sm font-semibold" %>
+      </div>
+    <% end %>
+  </article>
 <% end %>

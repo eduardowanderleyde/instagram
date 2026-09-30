@@ -1,59 +1,28 @@
-<div class="container home-sections d-flex flex-row justify-content-center align-items-center">
-    <div class="login-section pt-3">
-    
-        <div class="card text-center pt-5 mx-auto" style="width: 23rem;">
-          <%= image_tag 'logo.jpeg', class: "card-img-top"%>
-          <p class="w-75 fs-6 fw-bold text-secondary align-self-center mt-2">Sign up to see photos and videos from your friends.</p>
-          
-          <a href="#" class="d-block mt-4 text-decoration-none fw-bold bg-primary text-white rounded w-75 align-self-center p-1">
-            <%= image_tag("facebook.jpeg", class: "facebook")%>
-            Log in with Facebook
-          </a>
+<main class="mx-auto flex min-h-screen max-w-sm flex-col justify-center gap-3 px-4 py-8">
+  <div class="card flex flex-col items-center gap-4 px-10 py-8">
+    <%= image_tag "logo.jpeg", alt: "Instagram", class: "w-44" %>
+    <p class="text-center font-semibold text-gray-500">Sign up to see photos and videos from your friends.</p>
 
-          <div class="d-flex align-items-center mt-4">
-              <div class="line"></div>
-              <h2 class="line-text">OR</h2>
-              <div class="line"></div>
-          </div>
+    <a href="#" class="btn btn-primary w-full">
+      <%= image_tag "facebook.jpeg", alt: "", class: "w-4" %>
+      Log in with Facebook
+    </a>
 
-            <div class="card-body">
-              <%= form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
-                  <div class="mb-3 mt-4"> 
-                      <%= f.email_field :email, class: "form-control", placeholder: "Phone number or email"%>
-                  </div>
-                  <div class="mb-3 mt-4"> 
-                      <%= f.text_field :full_name, class: "form-control", placeholder: "Full Name"%>
-                  </div>
-                  <div class="mb-3 mt-4"> 
-                      <%= f.text_field :username, class: "form-control", placeholder: "Username"%>
-                  </div>
-                  <div class="mb-3">
-                      <%= f.password_field :password, class: "form-control", placeholder: "Password"%>
-                  </div>
-                  <div class="mb-3">
-                      <%= f.password_field :password_confirmation, class: "form-control", placeholder: "Password Confirmation"%>
-                  </div>
-                  <%= f.submit "Sign up", class: "btn btn-primary w-100" %>
-              <%end%>
+    <div class="divider-or w-full">or</div>
 
+    <%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: { class: "flex w-full flex-col gap-2" }) do |f| %>
+      <%= render "devise/shared/error_messages", resource: resource %>
+      <%= f.email_field :email, autocomplete: "email", placeholder: "Email", class: "input" %>
+      <%= f.text_field :full_name, autocomplete: "name", placeholder: "Full Name", class: "input" %>
+      <%= f.text_field :username, autocomplete: "username", placeholder: "Username", class: "input" %>
+      <%= f.password_field :password, autocomplete: "new-password", placeholder: "Password", class: "input" %>
+      <%= f.password_field :password_confirmation, autocomplete: "new-password", placeholder: "Password Confirmation", class: "input" %>
+      <%= f.submit "Sign up", class: "btn btn-primary mt-2 w-full" %>
+    <% end %>
+  </div>
 
-            <% if notice%>
-                <p class="notice"><%= notice %></p>
-            <%elsif%>
-                <p class="alert"><%= alert %></p>
-            <%end%>
-
-            </div>
-        </div>
-
-
-        <div class="card text-center py-2 mt-3 mx-auto" style="width: 23rem;">
-            <div class="card-text">
-                have an account?
-                <%= link_to "Sign In", new_user_session_path, class: "fs-6 my-4 text-decoration-none text-info"%>
-            </div>
-        </div>
-
-    </div>
-</div>
-
+  <div class="card px-10 py-5 text-center text-sm">
+    Have an account?
+    <%= link_to "Log in", new_user_session_path, class: "font-semibold text-blue-500" %>
+  </div>
+</main>

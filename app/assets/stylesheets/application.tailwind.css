@@ -1,3 +1,62 @@
-@import "tailwindcss/base";
-@import "tailwindcss/components";
-@import "tailwindcss/utilities"; 
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .btn {
+    @apply inline-flex items-center justify-center gap-1 rounded-lg px-4 py-1.5 text-sm font-semibold transition-colors cursor-pointer disabled:opacity-50;
+  }
+  .btn-primary {
+    @apply bg-blue-500 text-white hover:bg-blue-600;
+  }
+  .btn-secondary {
+    @apply bg-gray-100 text-gray-900 hover:bg-gray-200;
+  }
+  .btn-danger {
+    @apply bg-red-500 text-white hover:bg-red-600;
+  }
+  .btn-link {
+    @apply bg-transparent p-0 text-blue-500 hover:text-blue-700;
+  }
+
+  .input {
+    @apply block w-full rounded-md border-gray-300 bg-gray-50 px-3 py-2 text-sm placeholder:text-gray-400 focus:border-gray-400 focus:ring-0;
+  }
+
+  .card {
+    @apply bg-white border border-gray-200 rounded-lg;
+  }
+
+  .modal {
+    @apply w-full max-w-md rounded-xl p-0 shadow-xl;
+  }
+  .modal::backdrop {
+    background: rgb(0 0 0 / 0.6);
+  }
+  .modal-header {
+    @apply flex items-center justify-between border-b border-gray-200 px-4 py-3 font-semibold;
+  }
+
+  /* Paginação do Kaminari */
+  .pagination {
+    @apply flex items-center gap-3 text-sm;
+  }
+  .pagination .current {
+    @apply font-semibold;
+  }
+  .pagination a {
+    @apply text-blue-500 hover:underline;
+  }
+
+  .divider-or {
+    @apply flex items-center gap-4 text-xs font-semibold uppercase text-gray-400 before:h-px before:flex-1 before:bg-gray-300 after:h-px after:flex-1 after:bg-gray-300;
+  }
+}
+
+/* FilePond: duas prévias por linha e altura limitada no modal de novo post */
+.filepond--item {
+  width: calc(50% - 0.5rem);
+}
+.filepond--root {
+  max-height: 20rem;
+}

@@ -1,15 +1,9 @@
-<% if notice && notice.is_a?(Array) %>
-  <% notice.each do |n| %>
-    <p class="alert alert-success"><%= n %></p>
-  <% end %>
-<% elsif notice && notice.is_a?(String) %>
-  <p class="alert alert-success"><%= notice %></p>
-<% end %>
-
-<% if alert && alert.is_a?(Array) %>
-  <% alert.each do |a| %>
-    <p class="alert alert-danger"><%= a %></p>
-  <% end %>
-<% elsif alert && alert.is_a?(String) %>
-  <p class="alert alert-danger"><%= alert %></p>
+<% flash_styles = { "notice" => "border-green-200 bg-green-50 text-green-800", "alert" => "border-red-200 bg-red-50 text-red-800" } %>
+<% messages = flash.to_hash.slice("notice", "alert").flat_map { |type, msgs| Array(msgs).map { |msg| [type, msg] } } %>
+<% if messages.any? %>
+  <div class="mx-auto mt-4 flex max-w-5xl flex-col gap-2 px-4">
+    <% messages.each do |type, message| %>
+      <p class="rounded-lg border px-4 py-2 text-sm <%= flash_styles[type] %>"><%= message %></p>
+    <% end %>
+  </div>
 <% end %>

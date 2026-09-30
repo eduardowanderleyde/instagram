@@ -4,7 +4,9 @@ import { Controller } from "@hotwired/stimulus";
 export default class extends Controller {
   static targets = ["button"];
 
-  like() {
+  like(event) {
+    // Ignora duplo clique em controles sobre a imagem (setas do carrossel).
+    if (event?.target.closest("button")) return;
     if (this.hasButtonTarget) this.buttonTarget.click();
   }
 }

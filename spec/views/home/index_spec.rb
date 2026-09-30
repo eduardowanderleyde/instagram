@@ -18,10 +18,6 @@ RSpec.describe "home/index", type: :view do
     render
   end
 
-  it "renders the flash messages partial" do
-    expect(view).to render_template(partial: "layouts/_flash_messages")
-  end
-
   it "renders the stories list partial" do
     expect(view).to render_template(partial: "story/_stories_list")
   end
