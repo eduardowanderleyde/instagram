@@ -1,5 +1,6 @@
 class CommentsController < ApplicationController
   before_action :set_post, only: [:create]
+  before_action :authorize_viewer!, only: [:create]
 
   def create
     @comment = @post.comments.create(user: current_user, body: params[:comment_body])
@@ -37,5 +38,9 @@ class CommentsController < ApplicationController
 
   def set_post
     @post = Post.find(params[:post_id])
+  end
+
+  def authorize_viewer!
+    head :forbidden unless @post.user.visible_to?(current_user)
   end
 end

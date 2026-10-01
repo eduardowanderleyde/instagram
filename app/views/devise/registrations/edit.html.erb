@@ -1,88 +1,55 @@
-<%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: { method: :put }) do |f| %>
-  <%= render "devise/shared/error_messages", resource: resource %>
+<main class="mx-auto max-w-3xl px-4 py-8">
+  <div class="card flex flex-col md:flex-row">
+    <nav class="border-b border-gray-200 md:w-48 md:border-b-0 md:border-r">
+      <span class="block border-l-2 border-gray-900 bg-gray-50 px-4 py-3 text-sm font-semibold">Edit profile</span>
+    </nav>
 
-  <div class="container w-75 card d-flex flex-row my-3 ps-0">
-    <div class="w-25 d-flex flex-column border-end">
-      <a href="#" class="active p-3 profile-edit-btn">Edit Profile</a>
-    </div>
+    <%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: { method: :put, class: "flex flex-1 flex-col gap-5 p-6 md:p-8" }) do |f| %>
+      <%= render "devise/shared/error_messages", resource: resource %>
 
-    <div class="w-50 ms-5 d-flex flex-column p-4">
-      <div class="d-flex align-items-center">
-        <%= image_tag resource.profile_pic.attached? ? resource.profile_pic : 'user-pp.jpeg', class: "img-thumbnail rounded-circle", style: "width: 3rem; max-height:3rem" %>
-        <div class="d-flex flex-column mx-3 justify-content-center">
-          <small class="fw-bold" style="overflow: hidden;text-overflow: ellipsis; white-space: nowrap; max-width: 10rem;"><%= resource.username %></small>
-          <%= f.file_field :profile_pic, class: "form-control form-control-sm" %>
-        </div>
-        <div class="form-check">
-          <%= f.check_box :private, class:"from-check-input" %>
-          <%= f.label :private_account, class: "form-check-label fw-bold" %>
+      <div class="flex items-center gap-4">
+        <%= avatar_tag resource, size: "w-14 h-14" %>
+        <div class="min-w-0 flex-1">
+          <p class="truncate font-semibold"><%= resource.username %></p>
+          <%= f.file_field :profile_pic, accept: "image/*",
+                class: "mt-1 block w-full text-xs file:mr-3 file:rounded-md file:border-0 file:bg-gray-100 file:px-3 file:py-1.5 file:font-semibold hover:file:bg-gray-200" %>
         </div>
       </div>
 
-      <div class="row mb-3 mt-3">
-        <%= f.label :full_name, class: "col-sm-4 col-form-label fw-bold" %>
-        <div class="col-sm-8">
-          <%= f.text_field :full_name, placeholder: "Full Name", autofocus: true, class: "form-control" %>
-          <small class="text-muted">Help people discover your account by using the name you're known by: either your full name, nickname, or business name.</small>
-        </div>
-      </div>
+      <label class="flex items-center gap-2 text-sm font-semibold">
+        <%= f.check_box :private, class: "rounded text-blue-500 focus:ring-0" %>
+        Private account
+      </label>
 
-      <div class="row mb-3 mt-3">
-        <%= f.label :username, class: "col-sm-4 col-form-label fw-bold" %>
-        <div class="col-sm-8">
-          <%= f.text_field :username, placeholder: "Username", autofocus: true, class: "form-control" %>
+      <% fields = [
+           [:full_name, :text_field, "Help people discover your account by using the name you're known by."],
+           [:username, :text_field, nil],
+           [:bio, :text_area, nil],
+           [:email, :email_field, nil],
+           [:phone_number, :text_field, nil],
+           [:password, :password_field, "Leave it blank if you don't want to change it."],
+           [:password_confirmation, :password_field, nil],
+           [:current_password, :password_field, "Current password required to save changes."]
+         ] %>
+      <% fields.each do |attribute, field_type, hint| %>
+        <div class="grid gap-1 sm:grid-cols-3 sm:gap-4">
+          <%= f.label attribute, attribute == :password ? "New password" : nil, class: "text-sm font-semibold sm:pt-2 sm:text-right" %>
+          <div class="sm:col-span-2">
+            <% if field_type == :text_area %>
+              <%= f.text_area attribute, rows: 4, class: "input" %>
+            <% else %>
+              <%= f.public_send field_type, attribute, class: "input", autocomplete: (field_type == :password_field ? "new-password" : nil) %>
+            <% end %>
+            <% if hint %>
+              <p class="mt-1 text-xs text-gray-500"><%= hint %></p>
+            <% end %>
+          </div>
         </div>
-      </div>
+      <% end %>
 
-      <div class="row mb-3 mt-3">
-        <%= f.label :bio, class: "col-sm-4 col-form-label fw-bold" %>
-        <div class="col-sm-8">
-          <%= f.text_area :bio, autofocus: true, class: "form-control", rows: 5 %>
-        </div>
-      </div>
-
-      <div class="row mb-3">
-        <%= f.label :email, class: "col-sm-4 col-form-label fw-bold" %>
-        <div class="col-sm-8">
-          <%= f.email_field :email, autofocus: true, class: "form-control" %>
-        </div>
-      </div>
-
-      <div class="row mb-3">
-        <%= f.label :phone_number, class: "col-sm-4 col-form-label fw-bold" %>
-        <div class="col-sm-8">
-          <%= f.text_field :phone_number, placeholder: "Phone Number", autofocus: true, class: "form-control" %>
-        </div>
-      </div>
-
-      <div class="row mb-3">
-        <%= f.label :new_password, class: "col-sm-4 col-form-label fw-bold" %>
-        <div class="col-sm-8">
-          <%= f.password_field :password, placeholder: "New Password", autofocus: true, class: "form-control" %>
-          <small class="text-muted">Leave it blank if you don't want to change it.</small>
-        </div>
-      </div>
-
-      <div class="row mb-3">
-        <%= f.label :new_password_confirmation, class: "col-sm-4 col-form-label fw-bold" %>
-        <div class="col-sm-8">
-          <%= f.password_field :password_confirmation, placeholder: "New Password Confirmation", autofocus: true, class: "form-control" %>
-        </div>
-      </div>
-
-      <div class="row mb-3">
-        <%= f.label :current_password, class: "col-sm-4 col-form-label fw-bold" %>
-        <div class="col-sm-8">
-          <%= f.password_field :current_password, placeholder: "Current Password", autofocus: true, class: "form-control" %>
-          <small class="text-muted">Current password required to submit.</small>
-        </div>
-      </div>
-
-      <div class="d-flex mb-2 justify-content-center">
+      <div class="flex justify-end">
         <%= f.submit "Submit", class: "btn btn-primary" %>
       </div>
-      
-    </div>
+    <% end %>
   </div>
-
-<% end %>
+</main>

@@ -5,14 +5,30 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+          integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer">
+    <%= stylesheet_link_tag "filepond", "filepond-plugin-image-preview", "data-turbo-track": "reload" %>
     <%= stylesheet_link_tag "tailwind", "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
   </head>
 
-  <body>
-  <% if current_user %>
-    <%= render "layouts/navbar" %> 
-  <% end %>
+  <body class="min-h-screen bg-gray-50 text-gray-900 antialiased">
+    <% if current_user %>
+      <%= render "layouts/navbar" %>
+    <% elsif !devise_controller? %>
+      <nav class="sticky top-0 z-40 border-b border-gray-200 bg-white">
+        <div class="mx-auto flex max-w-5xl items-center justify-between px-4 py-2">
+          <%= link_to root_path do %>
+            <%= image_tag "logo.jpeg", alt: "Instagram", class: "h-9 w-auto" %>
+          <% end %>
+          <div class="flex gap-2">
+            <%= link_to "Log in", new_user_session_path, class: "btn btn-primary" %>
+            <%= link_to "Sign up", new_user_registration_path, class: "btn btn-link" %>
+          </div>
+        </div>
+      </nav>
+    <% end %>
+    <%= render "layouts/flash_messages" %>
     <%= yield %>
   </body>
 </html>

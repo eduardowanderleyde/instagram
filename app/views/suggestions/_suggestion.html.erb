@@ -1,25 +1,17 @@
-<div class="d-flex justify-content-between">
-  <div class="d-flex">
-    <%= image_tag suggestion.profile_pic.attached? ? suggestion.profile_pic : 'user-pp.jpeg', class: "img-thumbnail rounded-circle", style: "width: 2.5rem" %>
-    <div class="d-flex flex-column mx-3"> 
-      <small class="fw-bold" style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width:10rem">
-        <%= link_to suggestion, class: "a-decoration-none", data: {turbo: 'false'} do %>
-          <%= suggestion.username %>
-        <% end %>
-      </small> 
-      <small class="text-muted" style="font-size:.7rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width:10rem">
-        Suggested For You by Instagram as He followed you before
-      </small> 
+<div class="flex items-center justify-between gap-3">
+  <%= link_to suggestion, class: "flex min-w-0 items-center gap-3", data: { turbo: false } do %>
+    <%= avatar_tag suggestion, size: "w-9 h-9" %>
+    <div class="min-w-0 text-sm">
+      <p class="truncate font-semibold"><%= suggestion.username %></p>
+      <p class="truncate text-xs text-gray-500">Suggested for you</p>
     </div>
-  </div>
+  <% end %>
 
   <% if current_user.waiting_followings.include?(suggestion) %>
-    <%= button_to cancel_request_path(user_id: suggestion.id), method: :delete, class: "btn bg-transparent border-0", data: {turbo: 'false'} do %>
-      <small class="fw-bold text-secondary">Cancel</small> 
-    <% end %>
+    <%= button_to "Requested", cancel_request_path(user_id: suggestion.id), method: :delete,
+          class: "btn-link text-xs font-semibold text-gray-500", data: { turbo: false } %>
   <% else %>
-    <%= button_to follow_path(user_id: suggestion.id), method: :post, class: "btn bg-transparent border-0", data: {turbo: 'false'} do %>
-      <small class="fw-bold text-primary">Follow</small> 
-    <% end %>
+    <%= button_to "Follow", follow_path(user_id: suggestion.id), method: :post,
+          class: "btn-link text-xs font-semibold", data: { turbo: false } %>
   <% end %>
 </div>

@@ -1,15 +1,21 @@
-<div class="" style="width:20rem">
-  <div class="d-flex flex-row justify-content-between">
-    <p class="text-muted fw-bold">Suggestions For You</p>
-    <%= link_to root_path, style:"text-decoration:none" do%>
-      <small class="fw-bold text-dark">See All</small>
+<div class="flex flex-col gap-4">
+  <div class="flex items-center gap-3">
+    <%= link_to current_user do %>
+      <%= avatar_tag current_user, size: "w-11 h-11" %>
     <% end %>
+    <div class="min-w-0 text-sm">
+      <%= link_to current_user.username, current_user, class: "block truncate font-semibold" %>
+      <p class="truncate text-gray-500"><%= current_user.full_name %></p>
+    </div>
   </div>
 
-  <div class="d-flex flex-column gap-3 px-2">
-    <% @suggestions.each do |suggestion| %>
-      <%= render 'suggestions/suggestion', suggestion: suggestion %>
-    <% end %>
+  <div class="flex items-center justify-between text-sm">
+    <p class="font-semibold text-gray-500">Suggestions for you</p>
   </div>
 
+  <div class="flex flex-col gap-3">
+    <% suggestions.each do |suggestion| %>
+      <%= render "suggestions/suggestion", suggestion: suggestion %>
+    <% end %>
+  </div>
 </div>

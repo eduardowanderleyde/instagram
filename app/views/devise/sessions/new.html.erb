@@ -1,51 +1,28 @@
-<div class="container home-sections d-flex flex-row justify-content-center align-items-center">
-    <div class="images-section pt-3 d-none d-lg-block"></div>
+<main class="mx-auto flex min-h-screen max-w-4xl items-center justify-center gap-8 px-4 py-8">
+  <%= image_tag "home-phone-bg.jpeg", alt: "", class: "hidden max-h-[36rem] lg:block" %>
 
-    <div class="login-section pt-3">
-    
-        <div class="card text-center pt-5" style="width: 23rem;">
-            <%= image_tag'logo.jpeg', class: "card-img-top"%>
-            <div class="card-body">
-              <%= form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
-                  <div class="mb-3 mt-4"> 
-                      <%= f.email_field :email, class: "form-control", placeholder: "Phone number, username or email"%>
-                  </div>
-                  <div class="mb-3">
-                      <%= f.password_field :password, class: "form-control", placeholder: "Password"%>
-                  </div>
-                  <%= f.submit "Log In", class: "btn btn-primary w-100" %>
-              <%end%>
+  <div class="flex w-full max-w-sm flex-col gap-3">
+    <div class="card flex flex-col items-center gap-4 px-10 py-8">
+      <%= image_tag "logo.jpeg", alt: "Instagram", class: "mb-4 w-44" %>
 
-                <div class="d-flex align-items-center mt-4">
-                    <div class="line"></div>
-                    <h2 class="line-text">OR</h2>
-                    <div class="line"></div>
-                </div>
+      <%= form_for(resource, as: resource_name, url: session_path(resource_name), html: { class: "flex w-full flex-col gap-2" }) do |f| %>
+        <%= f.email_field :email, autofocus: true, autocomplete: "email", placeholder: "Email", class: "input" %>
+        <%= f.password_field :password, autocomplete: "current-password", placeholder: "Password", class: "input" %>
+        <%= f.submit "Log in", class: "btn btn-primary mt-2 w-full" %>
+      <% end %>
 
+      <div class="divider-or w-full">or</div>
 
-            <a href="#" class="d-block mt-4 text-decoration-none fw-bold">
-            <%= image_tag("facebook.jpeg", class: "facebook")%>
-            Log in with Facebook
-            </a>
-
-            <% if notice%>
-                <p class="notice"><%= notice %></p>
-            <%elsif%>
-                <p class="alert"><%= alert %></p>
-            <%end%>
-
-            <a href="#" class="fs-6 d-block my-4 text-decoration-none">Forgot password?</a>
-
-            </div>
-        </div>
-
-
-        <div class="card text-center py-2 mt-3" style="width: 23rem;">
-            <div class="card-text">
-              Don't have an account?
-              <%= link_to "Sign up", new_user_registration_path,class: "fs-6 my-4 text-decoration-none" %>
-            </div>
-        </div>
-
+      <a href="#" class="flex items-center gap-2 text-sm font-semibold text-blue-900">
+        <%= image_tag "facebook.jpeg", alt: "", class: "w-4" %>
+        Log in with Facebook
+      </a>
+      <a href="#" class="text-xs text-blue-900">Forgot password?</a>
     </div>
-</div>
+
+    <div class="card px-10 py-5 text-center text-sm">
+      Don't have an account?
+      <%= link_to "Sign up", new_user_registration_path, class: "font-semibold text-blue-500" %>
+    </div>
+  </div>
+</main>

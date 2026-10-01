@@ -1,10 +1,9 @@
-<h1>Editing post</h1>
-
-<%= render "form", post: @post %>
-
-<br>
-
-<div>
-  <%= link_to "Show this post", @post %> |
-  <%= link_to "Back to posts", posts_path %>
-</div>
+<main class="mx-auto max-w-3xl px-4 py-8">
+  <div class="card">
+    <div class="modal-header">
+      <h1>Edit post</h1>
+      <%= link_to "Cancel", @post, class: "text-sm font-normal text-gray-500 hover:underline" %>
+    </div>
+    <%= render "form", post: @post %>
+  </div>
+</main>

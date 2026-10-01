@@ -1,94 +1,90 @@
-<nav class="navbar navbar-expand-lg navbar-light bg-light sticky-top bg-white border-bottom" style="border-color: #afafaf">
-  <div class="container-fluid w-75">
-    <%= link_to root_path, class: "navbar-brand" do %>
-      <%= image_tag 'logo.jpeg', width: "100rem" %>
+<nav class="sticky top-0 z-40 border-b border-gray-200 bg-white">
+  <div class="mx-auto flex max-w-5xl items-center justify-between gap-4 px-4 py-2">
+    <%= link_to root_path, class: "shrink-0" do %>
+      <%= image_tag "logo.jpeg", alt: "Instagram", class: "h-9 w-auto" %>
     <% end %>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="d-flex">
-      <div class="collapse navbar-collapse me-5" id="navbarSupportedContent">
-          <%= form_with(url: users_path, method: :get, data: {turbo_frame: "search_results", controller: "search-results"}, class:"d-flex") do |f| %>
 
-        <div class="dropdown">
-            <%= f.text_field :search_query, class: "form-control me-2 border-0", type:"search",placeholder:"Search",
-            "aria-label"=>"Search", style: "background: #efefef", "data-bs-toggle"=>"dropdown", "aria-expanded"=>"false",
-            data: {action: "input->search-results#search"} %>
-
-          <ul class="dropdown-menu p-4 mt-2" style="width:25rem">
-            <%= render 'layouts/search_results', users: [] %>
-          </ul>
-        </div>
-
-        <% end %>
+    <%# Busca de usuários %>
+    <div class="relative hidden w-64 sm:block" data-controller="dropdown"
+         data-action="click@window->dropdown#hide keydown->dropdown#closeOnEscape">
+      <%= form_with url: users_path, method: :get, data: { turbo_frame: "search_results", controller: "search-results" } do |f| %>
+        <%= f.search_field :search_query, placeholder: "Search", autocomplete: "off", "aria-label": "Search",
+              class: "input border-0 bg-gray-100",
+              data: { action: "input->search-results#search focus->dropdown#open" } %>
+      <% end %>
+      <div class="absolute left-0 right-0 mt-2 hidden max-h-96 overflow-y-auto card p-2 shadow-lg" data-dropdown-target="menu">
+        <%= render "layouts/search_results", users: [] %>
       </div>
-      <div class="navbar-collapse gap-4">
-        <%= link_to root_path, class:"text-dark" do %>
-          <i class="fa-solid fa-house fa-xl"></i>
-        <% end %>
-        <i class="fa-brands fa-facebook-messenger fa-xl"></i>
-        <a type="button" class="text-dark" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
-          <i class="fa-regular fa-square-plus fa-xl"></i>
-        </a>
-        <i class="fa-regular fa-compass fa-xl"></i>
+    </div>
 
+    <div class="flex items-center gap-5 text-xl">
+      <%= link_to root_path, class: "hover:text-gray-500", title: "Home" do %>
+        <i class="fa-solid fa-house"></i>
+      <% end %>
 
+      <%# Novo post %>
+      <div data-controller="modal">
+        <button type="button" class="hover:text-gray-500" title="New post" data-action="modal#open">
+          <i class="fa-regular fa-square-plus"></i>
+        </button>
+        <dialog class="modal max-w-3xl" data-modal-target="dialog" data-action="click->modal#backdropClose">
+          <div class="modal-header">
+            <span>Create new post</span>
+            <button type="button" class="text-gray-500 hover:text-gray-900" aria-label="Close" data-action="modal#close">
+              <i class="fa-solid fa-xmark"></i>
+            </button>
+          </div>
+          <%= render "posts/form", post: Post.new %>
+        </dialog>
+      </div>
 
-        <div class="dropstart">
-          <i class="fa-regular fa-heart fa-xl" data-bs-toggle="dropdown" aria-expanded="false"></i>
-          <ul class="dropdown-menu p-4">
-            <% current_user.follow_requests.each do |fr| %>
-              <li>
-                <div class="d-flex justify-content-between">
-                  <div class="d-flex">
-                    <!-- User profile picture -->
-                    <%= image_tag (fr.follower.profile_pic.attached? ? fr.follower.profile_pic : 'user-pp.jpeg'), class: "img-thumbnail rounded-circle", style: "width: 2.5rem; max-height: 2.5rem" %>
-                    <div class="d-flex flex-column mx-3 justify-content-center">
-                      <!-- Link to user profile with username -->
-                      <small class="fw-bold" style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 5rem">
-                        <%= link_to fr.follower, class: "a-decoration-none" do %>
-                          <%= fr.follower.username %>
-                        <% end %>
-                      </small>
-                    </div>
-                  </div>
-                  <div class="d-flex flex-row align-items-center justify-content-between" style="width: 10.5rem">
-                    <!-- Follow button -->
-                    <%= button_to accept_follow_path(follow_id: fr.id), method: :post, class: "btn btn-primary", style:"text-decoration:none" do %>
-                      <small class="fw-bold text-white">Accept</small>
-                    <% end %>
-                    <%= button_to decline_follow_path(follow_id: fr.id), method: :delete, class: "btn btn-danger", style:"text-decoration:none" do %>
-                      <small class="fw-bold text-white">Decline</small>
-                    <% end %>
-                  </div>
+      <%# Pedidos de follow %>
+      <% follow_requests = current_user.follow_requests.includes(follower: { profile_pic_attachment: :blob }) %>
+      <div class="relative" data-controller="dropdown"
+           data-action="click@window->dropdown#hide keydown->dropdown#closeOnEscape">
+        <button type="button" class="relative hover:text-gray-500" title="Follow requests" data-action="dropdown#toggle">
+          <i class="fa-regular fa-heart"></i>
+          <% if follow_requests.any? %>
+            <span class="absolute -right-2 -top-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-red-500 px-1 text-[10px] font-bold text-white">
+              <%= follow_requests.size %>
+            </span>
+          <% end %>
+        </button>
+        <div class="absolute right-0 mt-3 hidden w-80 card p-3 text-sm shadow-lg" data-dropdown-target="menu">
+          <p class="mb-2 font-semibold">Follow requests</p>
+          <ul class="flex flex-col gap-3">
+            <% follow_requests.each do |fr| %>
+              <li class="flex items-center justify-between gap-2">
+                <%= link_to fr.follower, class: "flex min-w-0 items-center gap-2" do %>
+                  <%= avatar_tag fr.follower, size: "w-9 h-9" %>
+                  <span class="truncate font-semibold"><%= fr.follower.username %></span>
+                <% end %>
+                <div class="flex shrink-0 gap-1">
+                  <%= button_to "Accept", accept_follow_path(follow_id: fr.id), method: :post, class: "btn btn-primary px-3" %>
+                  <%= button_to "Decline", decline_follow_path(follow_id: fr.id), method: :delete, class: "btn btn-secondary px-3" %>
                 </div>
               </li>
             <% end %>
           </ul>
+          <% if follow_requests.empty? %>
+            <p class="text-gray-500">No pending requests.</p>
+          <% end %>
         </div>
-        <div class="dropdown">
-          <a class="text-dark" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-            <% if current_user && current_user.profile_pic.attached? %>
-              <%= image_tag current_user.profile_pic, class: "img-thumbnail rounded-circle", style: "width: 2rem" %>
-            <% else %>
-              <%= image_tag 'user-pp.jpeg', class: "img-thumbnail rounded-circle", style: "width: 2rem" %>
-            <% end %>
-          </a>
-          <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-            <li>
-              <%= link_to "Profile", user_path(current_user), class: "dropdown-item" %>
-            </li>
-            <li>
-              <%= link_to "Settings", edit_user_registration_path, class: "dropdown-item" %>
-            </li>
-            <li>
-              <%= link_to "Log Out", destroy_user_session_path, method: :get, class: "dropdown-item", data: {turbo:"false"} %>
-            </li>
-          </ul>
+      </div>
+
+      <%# Menu do perfil %>
+      <div class="relative" data-controller="dropdown"
+           data-action="click@window->dropdown#hide keydown->dropdown#closeOnEscape">
+        <button type="button" class="flex" title="Profile" data-action="dropdown#toggle">
+          <%= avatar_tag current_user, size: "w-7 h-7" %>
+        </button>
+        <div class="absolute right-0 mt-3 hidden w-44 card py-1 text-sm shadow-lg" data-dropdown-target="menu">
+          <%= link_to "Profile", user_path(current_user), class: "block px-4 py-2 hover:bg-gray-100" %>
+          <%= link_to "Settings", edit_user_registration_path, class: "block px-4 py-2 hover:bg-gray-100" %>
+          <%= button_to "Log Out", destroy_user_session_path, method: :delete,
+                class: "block w-full px-4 py-2 text-left hover:bg-gray-100", data: { turbo: false } %>
         </div>
       </div>
     </div>
   </div>
 </nav>
-
-<%= render 'posts/form', post: Post.new %>

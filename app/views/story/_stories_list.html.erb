@@ -1,5 +1,5 @@
-<div class="flex items-center gap-x-4 px-3 overflow-x-auto w-full py-2">
-  <% (0..7).each do %>
-    <%= render 'story/story' %>
+<div class="card flex w-full items-center gap-4 overflow-x-auto px-4 py-3">
+  <% 8.times do %>
+    <%= render "story/story" %>
   <% end %>
 </div>

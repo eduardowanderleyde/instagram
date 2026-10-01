@@ -18,7 +18,7 @@ FROM base as build
 
 # Install packages needed to build gems
 RUN apt-get update -qq && \
-    apt-get install --no-install-recommends -y build-essential git libvips pkg-config nodejs yarn libpq-dev
+    apt-get install --no-install-recommends -y build-essential git libvips pkg-config nodejs libpq-dev
 
 # Install application gems
 COPY Gemfile Gemfile.lock ./
@@ -36,6 +36,9 @@ RUN bundle exec bootsnap precompile app/ lib/
 RUN chmod +x bin/* && \
     sed -i "s/\r$//g" bin/* && \
     sed -i 's/ruby\.exe$/ruby/' bin/*
+
+# Precompile assets (Tailwind + Sprockets) without requiring RAILS_MASTER_KEY
+RUN SECRET_KEY_BASE_DUMMY=1 ./bin/rails assets:precompile
 
 # Final stage for app image
 FROM base
@@ -59,7 +62,7 @@ RUN useradd rails --create-home --shell /bin/bash && \
 RUN mkdir -p app/assets/builds && chown -R rails:rails app/assets/builds
 USER rails:rails
 
-# Entrypoint prepares the database and precompiles assets.
+# Entrypoint prepares the database.
 ENTRYPOINT ["/usr/bin/docker-entrypoint.sh"]
 
 # Start the server by default, this can be overwritten at runtime

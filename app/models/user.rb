@@ -30,6 +30,10 @@ class User < ApplicationRecord
     follow_record&.destroy
   end
 
+  def visible_to?(viewer)
+    !private? || viewer == self || (viewer.present? && viewer.followings.include?(self))
+  end
+
   def cancel_request(user)
     self.waiting_sent_requests.find_by(followed: user)&.destroy
   end

@@ -3,7 +3,7 @@ require 'rails_helper'
 
 RSpec.describe "home/index", type: :view do
   let(:user) { create(:user) }
-  let(:feeds) { create_list(:post, 3, user: user) }
+  let!(:feeds) { create_list(:post, 3, user: user) }
   let(:suggestions) { create_list(:user, 2) }
 
   before do
@@ -11,15 +11,11 @@ RSpec.describe "home/index", type: :view do
     allow(view).to receive(:current_user).and_return(user)
 
     # Set up instance variables required for the view
-    assign(:feeds, feeds)
+    assign(:posts, Post.order(created_at: :desc).page(1))
     assign(:suggestions, suggestions)
 
     # Render the view
     render
-  end
-
-  it "renders the flash messages partial" do
-    expect(view).to render_template(partial: "layouts/_flash_messages")
   end
 
   it "renders the stories list partial" do

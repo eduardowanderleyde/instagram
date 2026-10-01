@@ -19,7 +19,7 @@ RSpec.describe HomeController, type: :controller do
       expect(suggestions).not_to be_nil
       expect(suggestions).to include(followed_user)
       expect(suggestions).not_to include(user)
-      expect(suggestions).not_to include(*user.followings)
+      user.followings.each { |f| expect(suggestions).not_to include(f) }
     end
   end
 end

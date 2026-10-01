@@ -1,16 +1,9 @@
-<div class="d-flex justify-content-between">
-  <div class="d-flex">
-    <!-- User profile picture -->
-    <%= image_tag liker.profile_pic.attached? ? liker.profile_pic : 'user-pp.jpeg', class: "img-thumbnail rounded-circle", style: "width: 2.5rem; max-height: 2.5rem" %>
-    <div class="d-flex flex-column mx-3 justify-content-center">
-      <!-- Link to user profile with username -->
-      <small class="fw-bold" style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 10rem">
-        <%= link_to liker, class: "a-decoration-none", data: {turbo: 'false'} do %>
-          <%= liker.username %>
-        <% end %>
-      </small>
-    </div>
-  </div>
-
-  <% render  'layouts/shared/follow_state', user: liker%>
+<div class="flex items-center justify-between gap-3">
+  <%= link_to liker, class: "flex min-w-0 items-center gap-3", data: { turbo: false } do %>
+    <%= avatar_tag liker, size: "w-9 h-9" %>
+    <span class="truncate text-sm font-semibold"><%= liker.username %></span>
+  <% end %>
+  <% if current_user %>
+    <%= render "layouts/shared/follow_state", user: liker %>
+  <% end %>
 </div>

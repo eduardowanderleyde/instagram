@@ -1,28 +1,26 @@
-<div class="container border-bottom d-flex justify-content-center align-items-center gap-5" style="min-height: 20rem">
-  <%= image_tag user.profile_pic.attached? ? user.profile_pic : 'user-pp.jpeg', class: "img-thumbnail rounded-circle w-25", style: "max-width: 8rem; max-height:8rem" %>
-  
-  <div class="w-50 d-flex flex-column gap-4">
-    <div class="d-flex gap-3 align-items-center">
-      <p class="m-0 fw-bold"><%= user.username%></p>
-      <button class="btn border border-1"> Message </button>
+<header class="flex flex-col items-center gap-6 border-b border-gray-200 pb-8 sm:flex-row sm:items-start sm:gap-16 sm:px-8">
+  <%= avatar_tag user, size: "w-24 h-24 sm:w-36 sm:h-36" %>
 
-      <%= render 'layouts/shared/follow_state', user: user %>
+  <div class="flex flex-col items-center gap-4 sm:items-start">
+    <div class="flex flex-wrap items-center justify-center gap-3">
+      <h1 class="text-xl"><%= user.username %></h1>
       <% if user == current_user %>
-        <%= link_to "Edit Profile", edit_user_registration_path, class: "btn btn-transparent border"%>
+        <%= link_to "Edit profile", edit_user_registration_path, class: "btn btn-secondary" %>
+      <% else %>
+        <%= render "layouts/shared/follow_state", user: user %>
+        <button type="button" class="btn btn-secondary">Message</button>
       <% end %>
     </div>
 
-    <div class="d-flex gap-5">
-      <small class="fw-bold"><%= pluralize(user.posts.count,"Post") %></small>
-      <small class="fw-bold"><%= pluralize(user.followers.count,"Follower") %></small>
-      <small class="fw-bold"><%= pluralize(user.followings.count,"Following") %></small>
+    <ul class="flex gap-8 text-sm">
+      <li><span class="font-semibold"><%= user.posts.size %></span> <%= "post".pluralize(user.posts.size) %></li>
+      <li><span class="font-semibold"><%= user.followers.size %></span> <%= "follower".pluralize(user.followers.size) %></li>
+      <li><span class="font-semibold"><%= user.followings.size %></span> following</li>
+    </ul>
+
+    <div class="text-center text-sm sm:text-left">
+      <p class="font-semibold"><%= user.full_name %></p>
+      <p class="whitespace-pre-line"><%= user.bio %></p>
     </div>
-
-    <div class="d-flex flex-column">
-      <small class="fw-bold"> <%= user.full_name%> </small>
-      <small> <%= user.bio %> </small>
-
-    </div>
-
   </div>
-</div>
+</header>

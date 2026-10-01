@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe LikesController, type: :controller do
   let(:user) { create(:user) }
-  let(:post_record) { create(:post) }
+  let(:post_record) { create(:post, user: create(:user, private: false)) }
 
   before do
     sign_in user
@@ -36,6 +36,17 @@ RSpec.describe LikesController, type: :controller do
       it "renders the turbo stream response" do
         post :toggle_like, params: { post_id: post_record.id }, format: :turbo_stream
         expect(response.media_type).to eq 'text/vnd.turbo-stream.html'
+      end
+    end
+
+    context "when the post belongs to a private user the viewer doesn't follow" do
+      let(:post_record) { create(:post, user: create(:user, private: true)) }
+
+      it "does not create a like" do
+        expect {
+          post :toggle_like, params: { post_id: post_record.id }, format: :turbo_stream
+        }.not_to change(Like, :count)
+        expect(response).to have_http_status(:forbidden)
       end
     end
   end

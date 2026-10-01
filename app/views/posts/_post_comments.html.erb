@@ -1,30 +1,26 @@
 <%= turbo_frame_tag "post#{post.id}comments" do %>
-  <% if post.comments.count > 0 %>
-    <a href="#" data-bs-toggle="modal" data-bs-target="#post<%= post.id %>_commentsModal" style="text-decoration:none">
-      <small class="text-muted">View all <%= pluralize(post.comments.count, "comment") %></small>
-    </a>
-  <% end %>
-  <% post.comments.last(5).each do |comment| %>
-    <p class="card-text m-0"> <%= link_to comment.user, class:"a-decoration-none", data: {turbo: 'false'} do %><span class="fw-bold"><%= comment.user.username %></span> <% end %><%= comment.body %> </p>
-  <% end %>
+  <div data-controller="modal">
+    <% if post.comments.size > 5 %>
+      <button type="button" class="text-gray-500" data-action="modal#open">
+        View all <%= pluralize(post.comments.size, "comment") %>
+      </button>
+    <% end %>
+    <% post.comments.last(5).each do |comment| %>
+      <p><%= link_to comment.user.username, comment.user, class: "font-semibold", data: { turbo: false } %> <%= comment.body %></p>
+    <% end %>
 
-
-  <!-- Modal -->
-  <div class="modal fade" id="post<%= post.id %>_commentsModal" tabindex="-1" aria-labelledby="post<%= post.id %>_commentsModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="post<%= post.id %>_commentsModalLabel">Post Comments</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-          <div class="d-flex flex-column gap-3">
-            <% post.comments.each do |comment| %>
-              <%= render "posts/modal_comment", comment: comment %>
-            <% end %>
-          </div>
-        </div>
+    <dialog class="modal" data-modal-target="dialog" data-action="click->modal#backdropClose">
+      <div class="modal-header">
+        <span>Comments</span>
+        <button type="button" class="text-gray-500 hover:text-gray-900" aria-label="Close" data-action="modal#close">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
       </div>
-    </div>
+      <div class="flex max-h-[28rem] flex-col gap-4 overflow-y-auto p-4">
+        <% post.comments.each do |comment| %>
+          <%= render "posts/modal_comment", comment: comment %>
+        <% end %>
+      </div>
+    </dialog>
   </div>
 <% end %>
