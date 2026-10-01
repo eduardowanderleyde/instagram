@@ -10,7 +10,7 @@ Clone do Instagram em **Rails 7.2 / Ruby 3.2.2**.
 - **Modelos:** `User`, `Post` (várias imagens via Active Storage), `Like`, `Comment`, `Follow` (com `accepted` para perfis privados)
 - **Front:** importmap + Turbo + Stimulus; JS de terceiros vendorizado em `vendor/javascript` (filepond e plugins). **Não há Node/yarn no build.**
 - **CSS:** `tailwindcss-rails` v3 + `@tailwindcss/forms` (`app/assets/stylesheets/application.tailwind.css` → `tailwind.css`). Sem Bootstrap e sem Sass. Componentes reutilizáveis ficam em `@layer components` nesse arquivo: `btn`, `btn-primary`, `btn-secondary`, `btn-danger`, `btn-link`, `input`, `card`, `modal`, `modal-header`, `divider-or`.
-- **Ícones:** Font Awesome 6 via CDN (cdnjs) no layout.
+- **Ícones:** Font Awesome 6 via CDN (cdnjs) no layout, com hash SRI (`integrity`). Ao trocar a versão, atualize o hash (o cdnjs publica em `api.cdnjs.com/libraries/font-awesome/<versão>?fields=sri`).
 - **UI com Stimulus:** `dropdown_controller` (menus; fecha ao clicar fora ou com Esc), `modal_controller` (`<dialog>` nativo), `carousel_controller` (imagens do post), `like_controller` (duplo clique curte), `search_results_controller` (busca com debounce), `comments_controller` (limpa o form). O FilePond se liga a `input[type=file].filepond` em `app/javascript/custom/custom.js`.
 - **Helper `avatar_tag(user, size:)`** em `ApplicationHelper`: foto de perfil redonda com fallback para `user-pp.jpeg`. Use-o em vez de repetir `profile_pic.attached? ? ... : 'user-pp.jpeg'`.
 - **Flash:** renderizado uma vez no layout (`layouts/_flash_messages`); as views não precisam renderizar.
@@ -24,6 +24,7 @@ Clone do Instagram em **Rails 7.2 / Ruby 3.2.2**.
 - Só o dono edita, atualiza ou exclui um post (`PostsController#authorize_owner!`).
 - Só o usuário seguido aceita ou recusa um pedido de follow (`current_user.follow_requests.find`).
 - O feed deslogado mostra apenas posts de perfis públicos.
+- Logout só por `DELETE` (`config.sign_out_via = :delete` + `button_to` na navbar). GET permitiria logout forçado por CSRF; coberto por `spec/requests/sessions_spec.rb`.
 
 ## Rodando localmente
 
@@ -66,7 +67,7 @@ MSYS_NO_PATHCONV=1 docker run --rm -v "$(pwd -W):/app" -w /app ruby:3.2.2-slim b
 - **Bundler 2.5.x trava** com `undefined method 'name' for nil:NilClass` neste lockfile multiplataforma. Use o bundler 2.6.9 ou mais novo (`gem update --system` ou `bundle _2.7.2_ install`).
 - **Tailwind travado em v3:** `tailwindcss-rails` está em `~> 2.6`. A 4.x traz o Tailwind v4, que tem breaking changes no CSS; só suba com migração planejada.
 - **Plataformas no lockfile:** `Gemfile.lock` precisa manter `x86_64-linux` e `aarch64-linux`, além de `arm64-darwin`, senão o build Docker quebra.
-- **Cache do Sprockets após remover arquivos:** no container de dev, apagar ou renomear assets (ex.: os `.scss`) pode causar 500 `cannot load such file -- sassc`. Resolve com `rm -rf tmp/cache/assets` e reiniciar o servidor.
+- **Cache do Sprockets após remover arquivos:** em qualquer máquina (container ou local, inclusive no RSpec depois de um `git pull`), apagar ou renomear assets (ex.: os `.scss`) pode causar 500 `cannot load such file -- sassc`. Resolve com `rm -rf tmp/cache/assets` e reiniciar o servidor.
 - **Checkbox dentro de `<details>` fechado** é "invisível" para o Capybara; use `visible: :all` nos specs.
 - **Espaço em disco no Windows:** o disco do Docker Desktop (WSL) cresce e não encolhe sozinho. Com o C: cheio o Docker cai ("Docker Desktop is unable to start"). Use `docker image prune -a` e `docker builder prune` antes de baixar imagens grandes (a do Playwright tem cerca de 2 GB).
 - **`server.pid` órfão:** se o container de dev morrer, `docker start` falha com "A server is already running". Apague `tmp/pids/server.pid`.

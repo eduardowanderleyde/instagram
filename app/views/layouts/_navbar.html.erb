@@ -81,7 +81,8 @@
         <div class="absolute right-0 mt-3 hidden w-44 card py-1 text-sm shadow-lg" data-dropdown-target="menu">
           <%= link_to "Profile", user_path(current_user), class: "block px-4 py-2 hover:bg-gray-100" %>
           <%= link_to "Settings", edit_user_registration_path, class: "block px-4 py-2 hover:bg-gray-100" %>
-          <%= link_to "Log Out", destroy_user_session_path, class: "block px-4 py-2 hover:bg-gray-100", data: { turbo: false } %>
+          <%= button_to "Log Out", destroy_user_session_path, method: :delete,
+                class: "block w-full px-4 py-2 text-left hover:bg-gray-100", data: { turbo: false } %>
         </div>
       </div>
     </div>
